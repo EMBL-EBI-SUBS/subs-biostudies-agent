@@ -71,7 +71,7 @@ public class UsiContactsToBsSubSections implements Converter<Contacts, List<BioS
         if (contact.getAffiliation() != null && affiliationRefNames.containsKey(contact.getAffiliation())){
             String affiliationRef = affiliationRefNames.get(contact.getAffiliation());
             BioStudiesAttribute affiliationAttribute = BioStudiesAttribute.of("affiliation", affiliationRef);
-            affiliationAttribute.setIsReference(Boolean.TRUE);
+            affiliationAttribute.setIsReference(true);
             subsection.getAttributes().add(affiliationAttribute);
         }
 
