@@ -19,18 +19,18 @@ public class EstablishSession {
     private BioStudiesSubmission bioStudiesSubmission;
 
     @Value("${biostudiesUser}")
-    private String biostudiesUser;
+    private String biostudiesUser = "davidr@ebi.ac.uk";
     @Value("${biostudiesPassword}")
-    private String biostudiesPassword;
+    private String biostudiesPassword = "hellougis";
     @Value("${biostudiesServer}")
-    private String biostudiesServer;
+    private String biostudiesServer = "http://biostudy-dev.ebi.ac.uk:10180/biostd-beta";
 
 
     @Before
     public void buildup() {
         config = new BioStudiesConfig();
         config.setServer(biostudiesServer);
-        config.getAuth().setLogin(biostudiesPassword);
+        config.getAuth().setLogin(biostudiesUser);
         config.getAuth().setPassword(biostudiesPassword);
 
         bioStudiesSubmission = (BioStudiesSubmission) TestUtil.loadObjectFromJson(
@@ -75,6 +75,9 @@ public class EstablishSession {
 
         SubmissionReport response = session.submit(bioStudiesSubmission);
 
+        Assert.assertEquals("SUCCESS",response.getStatus());
+        Assert.assertNotNull(response.findAccession());
+        Assert.assertTrue(response.findAccession().startsWith("SUBSPRJ"));
 
     }
 

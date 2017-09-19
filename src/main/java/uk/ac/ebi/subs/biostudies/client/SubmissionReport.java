@@ -2,33 +2,49 @@ package uk.ac.ebi.subs.biostudies.client;
 
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 @Data
 public class SubmissionReport {
     private LogNode log;
-    private List<SubmissionMapping> mapping;
     private String status;
+
+    private static final String SUBMISSION_ACCESSIONED_MESSAGE_PREFIX = "Submission generated accNo: ";
+
+    public String findAccession(){
+        Optional<String> optionalString = log.nodeStream()
+                .filter(node -> "INFO".equals(node.level))
+                .map(node -> node.getMessage())
+                .filter(message -> message.startsWith(SUBMISSION_ACCESSIONED_MESSAGE_PREFIX))
+                .findAny();
+
+        if (!optionalString.isPresent()){
+            return null;
+        }
+
+        String accessionMessage = optionalString.get();
+        String accession = accessionMessage.replace(SUBMISSION_ACCESSIONED_MESSAGE_PREFIX,"").trim();
+
+        return accession;
+    }
 
     @Data
     public static class LogNode {
         private String level;
         private String message;
-        private List<LogNode> subnodes;
+        private List<LogNode> subnodes = new ArrayList<>();
+
+        public Stream<LogNode> nodeStream() {
+            return Stream.concat(
+              Stream.of(this),
+              this.subnodes.stream().flatMap(LogNode::nodeStream)
+            );
+        }
 
     }
 
-    @Data
-    public static class SubmissionMapping {
-        private AccessionMapping submissionMapping = new AccessionMapping();
-        private List<AccessionMapping> sectionsMapping;
-    }
-
-    @Data
-    public static class AccessionMapping {
-        private String origAcc;
-        private String assignedAcc;
-        private int[] position;
-    }
 
 }
