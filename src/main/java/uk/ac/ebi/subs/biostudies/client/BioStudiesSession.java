@@ -33,7 +33,7 @@ public class BioStudiesSession {
             response = restTemplate.postForEntity(
                     this.createUri(false),
                     wrapper,
-                    SubmissionReport.class //TODO temporary
+                    SubmissionReport.class
             );
         } catch (HttpClientErrorException e) {
             throw e;
