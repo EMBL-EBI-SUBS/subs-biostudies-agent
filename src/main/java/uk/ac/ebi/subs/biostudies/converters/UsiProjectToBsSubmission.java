@@ -15,7 +15,9 @@ public class UsiProjectToBsSubmission implements Converter<Project,BioStudiesSub
 
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY-MM-dd");
     private final UsiProjectToBsSection usiProjectToBsSection = new UsiProjectToBsSection();
-
+    private final String projectAccessionPrefix = "SUBSPRJ";
+    private final String sectionInternalAccession = "PROJECT";
+    private final String subsectionInternalAccessionPrefix = "SECT";
 
     @Override
     public BioStudiesSubmission convert(Project source) {
@@ -36,12 +38,12 @@ public class UsiProjectToBsSubmission implements Converter<Project,BioStudiesSub
 
         int sectCounter = 0;
 
-        submission.setAccno("!{SUBSPRJ}");
-        submission.getSection().setAccno("PROJECT");
+        submission.setAccno("!{"+projectAccessionPrefix+"}");
+        submission.getSection().setAccno(sectionInternalAccession);
         for (BioStudiesSubsection subsection : submission.getSection().getSubsections()) {
             if (!subsection.isAccessioned()) {
                 sectCounter++;
-                subsection.setAccno("SECT" + sectCounter);
+                subsection.setAccno(subsectionInternalAccessionPrefix + sectCounter);
             }
         }
 
