@@ -18,6 +18,104 @@
     "accno": "PROJECT",
     "subsections": [
       {
+        "accno": "SECT1",
+        "attributes": [
+          {
+            "name": "Name",
+            "value": "Clark J Kent"
+          },
+          {
+            "name": "firstName",
+            "value": "Clark"
+          },
+          {
+            "name": "middleInitials",
+            "value": "J"
+          },
+          {
+            "name": "lastName",
+            "value": "Kent"
+          },
+          {
+            "name": "E-mail",
+            "value": "kent@dailyplanet.com"
+          },
+          {
+            "name": "address",
+            "value": "The Daily Planet, Metropolis"
+          },
+          {
+            "name": "phone",
+            "value": "(555) 555-5555"
+          },
+          {
+            "name": "role",
+            "value": "submitter"
+          },
+          {
+            "name": "Organisation",
+            "isReference": true,
+            "value": "o1"
+          }
+        ],
+        "type": "Author"
+      },
+      {
+        "accno": "SECT2",
+        "attributes": [
+          {
+            "name": "Name",
+            "value": "Cal El"
+          },
+          {
+            "name": "firstName",
+            "value": "Cal"
+          },
+          {
+            "name": "lastName",
+            "value": "El"
+          },
+          {
+            "name": "E-mail",
+            "value": "cal-el@krypton.net"
+          },
+          {
+            "name": "address",
+            "value": "Fortress of solitude, Arctic"
+          },
+          {
+            "name": "role",
+            "value": "investigator"
+          },
+          {
+            "name": "Organisation",
+            "isReference": true,
+            "value": "o2"
+          }
+        ],
+        "type": "Author"
+      },
+      {
+        "accno": "o1",
+        "attributes": [
+          {
+            "name": "Name",
+            "value": "The Daily Planet"
+          }
+        ],
+        "type": "Organisation"
+      },
+      {
+        "accno": "o2",
+        "attributes": [
+          {
+            "name": "Name",
+            "value": "Krypton"
+          }
+        ],
+        "type": "Organisation"
+      },
+      {
         "accno": "27034376",
         "attributes": [
           {
@@ -36,109 +134,11 @@
           }
         ],
         "type": "Publication"
-      },
-      {
-        "accno": "SECT1",
-        "attributes": [
-          {
-            "name": "name",
-            "value": "Clark J Kent"
-          },
-          {
-            "name": "firstName",
-            "value": "Clark"
-          },
-          {
-            "name": "middleInitials",
-            "value": "J"
-          },
-          {
-            "name": "lastName",
-            "value": "Kent"
-          },
-          {
-            "name": "email",
-            "value": "kent@dailyplanet.com"
-          },
-          {
-            "name": "address",
-            "value": "The Daily Planet, Metropolis"
-          },
-          {
-            "name": "phone",
-            "value": "(555) 555-5555"
-          },
-          {
-            "name": "role",
-            "value": "submitter"
-          },
-          {
-            "name": "affiliation",
-            "isReference": true,
-            "value": "o1"
-          }
-        ],
-        "type": "Author"
-      },
-      {
-        "accno": "SECT2",
-        "attributes": [
-          {
-            "name": "name",
-            "value": "Cal El"
-          },
-          {
-            "name": "firstName",
-            "value": "Cal"
-          },
-          {
-            "name": "lastName",
-            "value": "El"
-          },
-          {
-            "name": "email",
-            "value": "cal-el@krypton.net"
-          },
-          {
-            "name": "address",
-            "value": "Fortress of solitude, Arctic"
-          },
-          {
-            "name": "role",
-            "value": "investigator"
-          },
-          {
-            "name": "affiliation",
-            "isReference": true,
-            "value": "o2"
-          }
-        ],
-        "type": "Author"
-      },
-      {
-        "accno": "o1",
-        "attributes": [
-          {
-            "name": "Name",
-            "value": "The Daily Planet"
-          }
-        ],
-        "type": "Organization"
-      },
-      {
-        "accno": "o2",
-        "attributes": [
-          {
-            "name": "Name",
-            "value": "Krypton"
-          }
-        ],
-        "type": "Organization"
       }
     ],
     "attributes": [
       {
-        "name": "description",
+        "name": "Description",
         "value": "The aim of the SUPER project is to identify all functional elements in the metahuman genome sequence through the generation of a diverse collection of high-throughput datasets and mapping these datasets onto the metahuman genome sequence. The SUPER Project involves close interactions between computational and experimental scientists to analyze the data and to evaluate different methods for annotating functional elements of the metahuman genome."
       },
       {
