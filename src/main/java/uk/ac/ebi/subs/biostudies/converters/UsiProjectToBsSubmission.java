@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import uk.ac.ebi.subs.biostudies.model.BioStudiesAttribute;
 import uk.ac.ebi.subs.biostudies.model.BioStudiesSection;
 import uk.ac.ebi.subs.biostudies.model.BioStudiesSubmission;
+import uk.ac.ebi.subs.biostudies.model.BioStudiesSubsection;
 import uk.ac.ebi.subs.data.submittable.Project;
 
 import java.text.SimpleDateFormat;
@@ -32,6 +33,17 @@ public class UsiProjectToBsSubmission implements Converter<Project,BioStudiesSub
         submission.setType("submission");
 
         submission.setSection(usiProjectToBsSection.convert(source));
+
+        int sectCounter = 0;
+
+        submission.setAccno("!{SUBSPRJ}");
+        submission.getSection().setAccno("PROJECT");
+        for (BioStudiesSubsection subsection : submission.getSection().getSubsections()) {
+            if (!subsection.isAccessioned()) {
+                sectCounter++;
+                subsection.setAccno("SECT" + sectCounter);
+            }
+        }
 
 
         return submission;

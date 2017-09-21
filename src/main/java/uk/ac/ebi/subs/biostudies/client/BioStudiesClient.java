@@ -1,5 +1,6 @@
 package uk.ac.ebi.subs.biostudies.client;
 
+import lombok.Data;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,7 @@ import java.net.URI;
 
 @Component
 @RequiredArgsConstructor
+@Data
 public class BioStudiesClient {
 
     @NonNull

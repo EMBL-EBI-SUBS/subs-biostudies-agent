@@ -16,6 +16,7 @@
   "section": {
     "subsections": [
       {
+        "accno": "27034376",
         "attributes": [
           {
             "name": "pubmedId",
@@ -25,6 +26,7 @@
         "type": "Publication"
       },
       {
+        "accno": "10.1016/j.molcel.2015.11.003",
         "attributes": [
           {
             "name": "doi",
