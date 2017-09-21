@@ -1,4 +1,5 @@
 {
+  "accno": "!{SUBSPRJ}",
   "attributes": [
     {
       "name": "Title",
@@ -14,6 +15,7 @@
     }
   ],
   "section": {
+    "accno": "PROJECT",
     "subsections": [
       {
         "accno": "27034376",
@@ -36,6 +38,7 @@
         "type": "Publication"
       },
       {
+        "accno": "SECT1",
         "attributes": [
           {
             "name": "name",
@@ -78,6 +81,7 @@
         "type": "Author"
       },
       {
+        "accno": "SECT2",
         "attributes": [
           {
             "name": "name",
