@@ -12,12 +12,4 @@ public class BioStudiesSection implements BioStudiesAccessioned {
     private String type;
     private List<BioStudiesSubsection> subsections = new ArrayList<>();
     private List<BioStudiesAttribute> attributes = new ArrayList<>();
-
-    @Override
-    public Stream<BioStudiesAccessioned> accessionedChildEntities() {
-        return Stream.concat(
-                subsections.stream(),
-                subsections.stream().flatMap(BioStudiesSubsection::accessionedChildEntities)
-        );//TODO
-    }
 }

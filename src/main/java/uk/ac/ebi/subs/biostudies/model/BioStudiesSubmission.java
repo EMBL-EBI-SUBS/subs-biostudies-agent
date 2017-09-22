@@ -15,18 +15,4 @@ public class BioStudiesSubmission implements BioStudiesAccessioned {
     private List<BioStudiesAttribute> attributes = new ArrayList<>();
     private BioStudiesSection section;
     private String type;
-
-    @Override
-    public Stream<BioStudiesAccessioned> accessionedChildEntities() {
-
-        if (section == null){
-            Collection<BioStudiesAccessioned> coll = Collections.emptyList();
-            return coll.stream();
-        }
-
-        return Stream.concat(
-          Stream.of(section),
-          section.accessionedChildEntities()
-        );
-    }
 }

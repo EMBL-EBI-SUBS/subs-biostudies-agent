@@ -13,10 +13,4 @@ public class BioStudiesSubsection implements BioStudiesAccessioned{
     private String type;
     private String accno;
     private List<BioStudiesAttribute> attributes = new ArrayList<>();
-
-    @Override
-    public Stream<BioStudiesAccessioned> accessionedChildEntities() {
-        Collection<BioStudiesAccessioned> coll = Collections.emptyList();
-        return coll.stream();
-    }
 }
