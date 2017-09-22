@@ -9,7 +9,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import uk.ac.ebi.subs.biostudies.BioStudiesAgentApp;
+import uk.ac.ebi.subs.BioStudiesAgentApp;
 import uk.ac.ebi.subs.biostudies.TestUtil;
 import uk.ac.ebi.subs.biostudies.model.BioStudiesSubmission;
 
@@ -60,11 +60,11 @@ public class BioStudiesClientTest {
     }
 
     @Test
-    public void submitGood() {
+    public void createGood() {
         BioStudiesClient client = new BioStudiesClient(config);
         BioStudiesSession session = client.initialiseSession();
 
-        SubmissionReport response = session.submit(bioStudiesSubmission);
+        SubmissionReport response = session.create(bioStudiesSubmission);
 
         Assert.assertEquals("OK", response.getStatus());
         Assert.assertNotNull(response.findAccession());
@@ -72,6 +72,22 @@ public class BioStudiesClientTest {
 
         System.out.println(response.findAccession());
 
+    }
+
+    @Test
+    public void updateGood() {
+        BioStudiesClient client = new BioStudiesClient(config);
+        BioStudiesSession session = client.initialiseSession();
+
+        bioStudiesSubmission.setAccno("SUBSPRJ1");
+
+        SubmissionReport response = session.update(bioStudiesSubmission);
+
+        Assert.assertEquals("OK", response.getStatus());
+        Assert.assertNotNull(response.findAccession());
+        Assert.assertEquals("SUBSPRJ1",response.findAccession());
+
+        System.out.println(response.findAccession());
     }
 
 }
