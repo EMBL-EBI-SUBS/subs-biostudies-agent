@@ -2,7 +2,9 @@ package uk.ac.ebi.subs.biostudies.client;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -39,8 +41,14 @@ public class BioStudiesClientTest {
         System.out.println(session);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+
+    @Rule public ExpectedException expectedException = ExpectedException.none();
+
+    @Test
     public void loginFailure() {
+        expectedException.expect(IllegalArgumentException.class);
+        expectedException.expectMessage("login failed, check username and password");
+
         BioStudiesConfig badConfig = new BioStudiesConfig();
         badConfig.setServer(config.getServer());
 
