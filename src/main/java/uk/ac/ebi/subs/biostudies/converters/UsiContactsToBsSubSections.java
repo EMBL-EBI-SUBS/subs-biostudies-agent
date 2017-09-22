@@ -31,7 +31,7 @@ public class UsiContactsToBsSubSections implements Converter<Contacts, List<BioS
     private BioStudiesSubsection affiliationRefToSubsection(Map.Entry<String, String> affiliationRefName) {
         BioStudiesSubsection subsection = new BioStudiesSubsection();
 
-        subsection.setType("Organization");
+        subsection.setType("Organisation");
         subsection.setAccno(affiliationRefName.getValue());
         subsection.getAttributes().add(BioStudiesAttribute.of("Name",affiliationRefName.getKey()));
 
@@ -44,7 +44,7 @@ public class UsiContactsToBsSubSections implements Converter<Contacts, List<BioS
         subsection.setType("Author");
 
         if (contactName(contact) != null){
-            subsection.getAttributes().add(BioStudiesAttribute.of("name",contactName(contact)));
+            subsection.getAttributes().add(BioStudiesAttribute.of("Name",contactName(contact)));
         }
 
         if (contact.getFirstName() != null){
@@ -57,7 +57,7 @@ public class UsiContactsToBsSubSections implements Converter<Contacts, List<BioS
             subsection.getAttributes().add(BioStudiesAttribute.of("lastName",contact.getLastName()));
         }
         if (contact.getEmail() != null){
-            subsection.getAttributes().add(BioStudiesAttribute.of("email",contact.getEmail()));
+            subsection.getAttributes().add(BioStudiesAttribute.of("E-mail",contact.getEmail()));
         }
         if (contact.getAddress() != null){
             subsection.getAttributes().add(BioStudiesAttribute.of("address",contact.getAddress()));
@@ -70,8 +70,8 @@ public class UsiContactsToBsSubSections implements Converter<Contacts, List<BioS
         }
         if (contact.getAffiliation() != null && affiliationRefNames.containsKey(contact.getAffiliation())){
             String affiliationRef = affiliationRefNames.get(contact.getAffiliation());
-            BioStudiesAttribute affiliationAttribute = BioStudiesAttribute.of("affiliation", affiliationRef);
-            affiliationAttribute.setIsReference(Boolean.TRUE);
+            BioStudiesAttribute affiliationAttribute = BioStudiesAttribute.of("Organisation", affiliationRef);
+            affiliationAttribute.setIsReference(true);
             subsection.getAttributes().add(affiliationAttribute);
         }
 

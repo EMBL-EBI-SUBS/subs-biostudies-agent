@@ -29,20 +29,34 @@ public class UsiPublicationsToBsSubsections implements Converter<Publications, L
 
         subsection.setType("Publication");
 
-        if (publication.getPubmedId() != null) {
-            subsection.getAttributes().add(
-                    BioStudiesAttribute.of("pubmedId", publication.getPubmedId())
-            );
-        }
+        String accno = null;
 
         if (publication.getDoi() != null) {
             subsection.getAttributes().add(
                     BioStudiesAttribute.of("doi", publication.getDoi())
             );
+            accno = publication.getDoi();
         }
 
+        if (publication.getPubmedId() != null) {
+            subsection.getAttributes().add(
+                    BioStudiesAttribute.of("pubmedId", publication.getPubmedId())
+            );
+            accno = pubmedIdNumericPart(publication.getPubmedId());
+        }
 
+        subsection.setAccno(accno);
 
         return subsection;
+    }
+
+    private String pubmedIdNumericPart(String pubmedId) {
+        final String pubmedPrefix = "PMID:";
+        if (pubmedId.startsWith(pubmedPrefix)) {
+            return pubmedId.replace(pubmedPrefix, "");
+        }
+        return null;
+
+
     }
 }

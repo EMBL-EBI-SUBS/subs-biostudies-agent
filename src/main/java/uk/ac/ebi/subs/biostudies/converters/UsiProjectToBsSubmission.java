@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import uk.ac.ebi.subs.biostudies.model.BioStudiesAttribute;
 import uk.ac.ebi.subs.biostudies.model.BioStudiesSection;
 import uk.ac.ebi.subs.biostudies.model.BioStudiesSubmission;
+import uk.ac.ebi.subs.biostudies.model.BioStudiesSubsection;
 import uk.ac.ebi.subs.data.submittable.Project;
 
 import java.text.SimpleDateFormat;
@@ -14,7 +15,9 @@ public class UsiProjectToBsSubmission implements Converter<Project,BioStudiesSub
 
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY-MM-dd");
     private final UsiProjectToBsSection usiProjectToBsSection = new UsiProjectToBsSection();
-
+    private final String projectAccessionPrefix = "SUBSPRJ";
+    private final String sectionInternalAccession = "PROJECT";
+    private final String subsectionInternalAccessionPrefix = "SECT";
 
     @Override
     public BioStudiesSubmission convert(Project source) {
@@ -32,6 +35,17 @@ public class UsiProjectToBsSubmission implements Converter<Project,BioStudiesSub
         submission.setType("submission");
 
         submission.setSection(usiProjectToBsSection.convert(source));
+
+        int sectCounter = 0;
+
+        submission.setAccno("!{"+projectAccessionPrefix+"}");
+        submission.getSection().setAccno(sectionInternalAccession);
+        for (BioStudiesSubsection subsection : submission.getSection().getSubsections()) {
+            if (!subsection.isAccessioned()) {
+                sectCounter++;
+                subsection.setAccno(subsectionInternalAccessionPrefix + sectCounter);
+            }
+        }
 
 
         return submission;

@@ -1,13 +1,11 @@
 package uk.ac.ebi.subs.biostudies.model;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import uk.ac.ebi.subs.biostudies.TestUtil;
 import uk.ac.ebi.subs.biostudies.converters.UsiProjectToBsSubmission;
 import uk.ac.ebi.subs.data.submittable.Project;
 
@@ -84,27 +82,16 @@ public class ConvertUsiToBioStudies {
     }
 
     @Before
-    public void buildUp() throws IOException, URISyntaxException {
-        usiProject = (Project) loadObjectFromJson(
+    public void buildUp() {
+        usiProject = (Project) TestUtil.loadObjectFromJson(
                 "exampleProject_usi.json",
                 Project.class
         );
-        bioStudiesSubmission = (BioStudiesSubmission) loadObjectFromJson(
+        bioStudiesSubmission = (BioStudiesSubmission) TestUtil.loadObjectFromJson(
                 "exampleProject_biostudies.json",
                 BioStudiesSubmission.class
         );
         actual = usiProjectToBsSubmission.convert(usiProject);
-    }
-
-
-    private Object loadObjectFromJson(String filePath, Class<?> clazz) throws URISyntaxException, IOException {
-        String json = IOUtils.toString(
-                ConvertUsiToBioStudies.class.getClassLoader().getResourceAsStream(filePath),
-                "UTF-8"
-        );
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-        return objectMapper.readValue(json, clazz);
     }
 
 
