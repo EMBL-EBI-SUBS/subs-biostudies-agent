@@ -16,21 +16,21 @@ public class UsiProjectToBsSection implements Converter<Project, BioStudiesSecti
         studiesSection.setType("Study");
 
         studiesSection.getAttributes().add(
-                BioStudiesAttribute.of("description", source.getDescription())
+                BioStudiesAttribute.of("Description", source.getDescription())
         );
         studiesSection.getAttributes().add(
                 BioStudiesAttribute.of("alias", source.getAlias())
         );
 
-        if (source.getPublications() != null) {
-            studiesSection.getSubsections().addAll(
-                    usiPublicationsToBsSubsections.convert(source)
-            );
-        }
-
         if (source.getContacts() != null) {
             studiesSection.getSubsections().addAll(
                     usiContactsToBsSubSections.convert(source)
+            );
+        }
+
+        if (source.getPublications() != null) {
+            studiesSection.getSubsections().addAll(
+                    usiPublicationsToBsSubsections.convert(source)
             );
         }
 

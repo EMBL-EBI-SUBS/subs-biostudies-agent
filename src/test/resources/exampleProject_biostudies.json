@@ -1,4 +1,5 @@
 {
+  "accno": "!{SUBSPRJ}",
   "attributes": [
     {
       "name": "Title",
@@ -6,7 +7,7 @@
     },
     {
       "name": "ReleaseDate",
-      "value": "1938-05-04"
+      "value": "2017-05-04"
     },
     {
       "name": "DataSource",
@@ -14,29 +15,13 @@
     }
   ],
   "section": {
+    "accno": "PROJECT",
     "subsections": [
       {
+        "accno": "SECT1",
         "attributes": [
           {
-            "name": "pubmedId",
-            "value": "PMID:27034376"
-          }
-        ],
-        "type": "Publication"
-      },
-      {
-        "attributes": [
-          {
-            "name": "doi",
-            "value": "10.1016/j.molcel.2015.11.003"
-          }
-        ],
-        "type": "Publication"
-      },
-      {
-        "attributes": [
-          {
-            "name": "name",
+            "name": "Name",
             "value": "Clark J Kent"
           },
           {
@@ -52,7 +37,7 @@
             "value": "Kent"
           },
           {
-            "name": "email",
+            "name": "E-mail",
             "value": "kent@dailyplanet.com"
           },
           {
@@ -68,7 +53,7 @@
             "value": "submitter"
           },
           {
-            "name": "affiliation",
+            "name": "Organisation",
             "isReference": true,
             "value": "o1"
           }
@@ -76,9 +61,10 @@
         "type": "Author"
       },
       {
+        "accno": "SECT2",
         "attributes": [
           {
-            "name": "name",
+            "name": "Name",
             "value": "Cal El"
           },
           {
@@ -90,7 +76,7 @@
             "value": "El"
           },
           {
-            "name": "email",
+            "name": "E-mail",
             "value": "cal-el@krypton.net"
           },
           {
@@ -102,7 +88,7 @@
             "value": "investigator"
           },
           {
-            "name": "affiliation",
+            "name": "Organisation",
             "isReference": true,
             "value": "o2"
           }
@@ -117,7 +103,7 @@
             "value": "The Daily Planet"
           }
         ],
-        "type": "Organization"
+        "type": "Organisation"
       },
       {
         "accno": "o2",
@@ -127,12 +113,32 @@
             "value": "Krypton"
           }
         ],
-        "type": "Organization"
+        "type": "Organisation"
+      },
+      {
+        "accno": "27034376",
+        "attributes": [
+          {
+            "name": "pubmedId",
+            "value": "PMID:27034376"
+          }
+        ],
+        "type": "Publication"
+      },
+      {
+        "accno": "10.1016/j.molcel.2015.11.003",
+        "attributes": [
+          {
+            "name": "doi",
+            "value": "10.1016/j.molcel.2015.11.003"
+          }
+        ],
+        "type": "Publication"
       }
     ],
     "attributes": [
       {
-        "name": "description",
+        "name": "Description",
         "value": "The aim of the SUPER project is to identify all functional elements in the metahuman genome sequence through the generation of a diverse collection of high-throughput datasets and mapping these datasets onto the metahuman genome sequence. The SUPER Project involves close interactions between computational and experimental scientists to analyze the data and to evaluate different methods for annotating functional elements of the metahuman genome."
       },
       {
