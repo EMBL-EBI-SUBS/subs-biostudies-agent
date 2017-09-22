@@ -3,6 +3,8 @@ package uk.ac.ebi.subs.biostudies.client;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -14,12 +16,15 @@ import java.net.URI;
 @Data
 @RequiredArgsConstructor(staticName = "of")
 public class BioStudiesSession {
+
+    private static final Logger logger = LoggerFactory.getLogger(BioStudiesSession.class);
+
     @NonNull
-    private BioStudiesLoginResponse bioStudiesLoginResponse;
+    private final BioStudiesLoginResponse bioStudiesLoginResponse;
     @NonNull
-    private BioStudiesConfig bioStudiesConfig;
+    private final BioStudiesConfig bioStudiesConfig;
     @NonNull
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
 
     private static final String SESSION_PARAM_NAME = "BIOSTDSESS";
 
@@ -36,27 +41,14 @@ public class BioStudiesSession {
                     SubmissionReport.class
             );
         } catch (HttpClientErrorException e) {
+            logger.error("Http error during submit");
+            logger.error("Response code: {}",e.getRawStatusCode());
+            logger.error("Response body: {}",e.getResponseBodyAsString());
             throw e;
         }
 
         return response.getBody();
     }
-
-    public String validate(BioStudiesSubmission bioStudiesSubmission) {
-        HttpEntity<String> response;
-        try {
-            response = restTemplate.postForEntity(
-                    this.createUri(true),
-                    bioStudiesSubmission,
-                    String.class //TODO temporary
-            );
-        } catch (HttpClientErrorException e) {
-            throw e;
-        }
-
-        return response.getBody();
-    }
-
 
     private URI createUri(boolean validateOnly) {
         StringBuilder queryParams = new StringBuilder("?" + SESSION_PARAM_NAME + "=" + bioStudiesLoginResponse.getSessid());

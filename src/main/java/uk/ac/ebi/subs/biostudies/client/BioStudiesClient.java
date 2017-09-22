@@ -3,6 +3,8 @@ package uk.ac.ebi.subs.biostudies.client;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
@@ -15,8 +17,10 @@ import java.net.URI;
 @Data
 public class BioStudiesClient {
 
+    private static final Logger logger = LoggerFactory.getLogger(BioStudiesClient.class);
+
     @NonNull
-    private BioStudiesConfig config;
+    private final BioStudiesConfig config;
     private RestTemplate restTemplate = new RestTemplate();
 
     private static final String OK_STATUS = "OK";
@@ -36,6 +40,9 @@ public class BioStudiesClient {
             if (HttpStatus.FORBIDDEN.equals(e.getStatusCode())){
                 throw new IllegalArgumentException("login failed, check username and password");
             }
+            logger.error("Http error during login");
+            logger.error("Response code: {}",e.getRawStatusCode());
+            logger.error("Response body: {}",e.getResponseBodyAsString());
             throw e;
         }
 
