@@ -15,8 +15,12 @@ public class SubmissionReport {
     private static final String SUBMISSION_ACCESSIONED_MESSAGE_PREFIX = "Submission generated accNo: ";
 
     public String findAccession(){
+        if (log == null){
+            return null;
+        }
+
         Optional<String> optionalString = log.nodeStream()
-                .filter(node -> "INFO".equals(node.level))
+                .filter(node -> "INFO".equals(node.getLevel()))
                 .map(node -> node.getMessage())
                 .filter(message -> message.startsWith(SUBMISSION_ACCESSIONED_MESSAGE_PREFIX))
                 .findAny();
@@ -38,6 +42,10 @@ public class SubmissionReport {
         private List<LogNode> subnodes = new ArrayList<>();
 
         public Stream<LogNode> nodeStream() {
+            if (this.subnodes == null){
+                return Stream.of(this);
+            }
+
             return Stream.concat(
               Stream.of(this),
               this.subnodes.stream().flatMap(LogNode::nodeStream)
