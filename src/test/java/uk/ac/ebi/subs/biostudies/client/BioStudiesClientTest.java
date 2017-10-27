@@ -57,6 +57,9 @@ public class BioStudiesClientTest {
 
         BioStudiesClient client = new BioStudiesClient(badConfig);
         BioStudiesSession session = client.initialiseSession();
+
+        //don't expect to get here
+        Assert.assertNotNull(session);
     }
 
     @Test
