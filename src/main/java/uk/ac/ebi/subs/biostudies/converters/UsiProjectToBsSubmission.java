@@ -1,36 +1,40 @@
 package uk.ac.ebi.subs.biostudies.converters;
 
+import lombok.Data;
+import lombok.NonNull;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 import uk.ac.ebi.subs.biostudies.model.BioStudiesAttribute;
-import uk.ac.ebi.subs.biostudies.model.BioStudiesSection;
 import uk.ac.ebi.subs.biostudies.model.BioStudiesSubmission;
 import uk.ac.ebi.subs.biostudies.model.BioStudiesSubsection;
 import uk.ac.ebi.subs.data.submittable.Project;
 
 import java.text.SimpleDateFormat;
 
+@Data
 @Component
 public class UsiProjectToBsSubmission implements Converter<Project,BioStudiesSubmission> {
 
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY-MM-dd");
-    private final UsiProjectToBsSection usiProjectToBsSection = new UsiProjectToBsSection();
-    private final String projectAccessionPrefix = "SUBSPRJ";
-    private final String sectionInternalAccession = "PROJECT";
-    private final String subsectionInternalAccessionPrefix = "SECT";
+    private static final String PROJECT_ACCESSION_PREFIX = "SUBSPRJ";
+    private static final String SECTION_INTERNAL_ACCESSION = "PROJECT";
+    private static final String SUBSECTION_INTERNAL_ACCESSION_PREFIX = "SECT";
+
+    @NonNull
+    private UsiProjectToBsSection usiProjectToBsSection;
+
 
     @Override
     public BioStudiesSubmission convert(Project source) {
         BioStudiesSubmission submission = new BioStudiesSubmission();
 
         submission.getAttributes().add(
-                BioStudiesAttribute.of("Title", source.getTitle())
+                BioStudiesAttribute.builder().name("Title").value( source.getTitle()).build()
         );
         submission.getAttributes().add(
-                BioStudiesAttribute.of("ReleaseDate", dateFormat.format(source.getReleaseDate()))
+                BioStudiesAttribute.builder().name("ReleaseDate").value( source.getReleaseDate().toString()).build()
         );
         submission.getAttributes().add(
-                BioStudiesAttribute.of("DataSource", "USI")
+                BioStudiesAttribute.builder().name("DataSource").value( "USI").build()
         );
         submission.setType("submission");
 
@@ -38,12 +42,12 @@ public class UsiProjectToBsSubmission implements Converter<Project,BioStudiesSub
 
         int sectCounter = 0;
 
-        submission.setAccno("!{"+projectAccessionPrefix+"}");
-        submission.getSection().setAccno(sectionInternalAccession);
+        submission.setAccno("!{"+ PROJECT_ACCESSION_PREFIX +"}");
+        submission.getSection().setAccno(SECTION_INTERNAL_ACCESSION);
         for (BioStudiesSubsection subsection : submission.getSection().getSubsections()) {
             if (!subsection.isAccessioned()) {
                 sectCounter++;
-                subsection.setAccno(subsectionInternalAccessionPrefix + sectCounter);
+                subsection.setAccno(SUBSECTION_INTERNAL_ACCESSION_PREFIX + sectCounter);
             }
         }
 

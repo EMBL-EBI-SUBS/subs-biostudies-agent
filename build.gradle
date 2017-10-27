@@ -35,13 +35,38 @@ repositories {
 
 dependencies {
     compileOnly 'org.projectlombok:lombok:1.16.18'
-    compile("uk.ac.ebi.subs:subs-processing-model:0.1.1-SNAPSHOT")
-    compile("uk.ac.ebi.subs:subs-data-model:0.1.0-SNAPSHOT")
-    compile("uk.ac.ebi.subs:subs-messaging:0.1.1-SNAPSHOT")
+    compile("uk.ac.ebi.subs:subs-processing-model:0.1.1-SNAPSHOT"){
+        exclude group: 'org.springframework.boot', module :'spring-boot-starter-data-mongodb'
+    }
+
+    compile("uk.ac.ebi.subs:subs-data-model:0.2.0-SNAPSHOT"){
+        exclude group: 'org.springframework.boot', module :'spring-boot-starter-data-mongodb'
+    }
+    compile("uk.ac.ebi.subs:subs-messaging:0.4.0-SNAPSHOT"){
+        exclude group: 'org.springframework.boot', module :'spring-boot-starter-data-mongodb'
+    }
     optional("org.springframework.boot:spring-boot-configuration-processor")
     testCompile("org.springframework.boot:spring-boot-starter-test")
     testCompile("commons-io:commons-io:2.5")
+
+    compile ("uk.ac.ebi.subs:validator-common:0.1.0-SNAPSHOT") {
+        exclude group: 'org.springframework.boot', module :'spring-boot-starter-data-mongodb'
+    }
 }
+
+task ciTest(type: Test) {
+    useJUnit {
+        excludeCategories 'uk.ac.ebi.subs.BioStudiesApiDependentTest'
+    }
+    testLogging {
+        exceptionFormat = 'full'
+    }
+}
+configure(ciTest){
+    group = 'verification'
+    description = 'Run tests suitable for a continuous integration environment'
+}
+
 
 springBoot {
     executable = true
@@ -63,7 +88,6 @@ task printJarName {
     doLast {
         println "$jar.archivePath.name"
     }
-
 }
 
 task printJarFullPath {
