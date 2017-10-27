@@ -1,6 +1,8 @@
 package uk.ac.ebi.subs.biostudies.converters;
 
+import lombok.Data;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
 import uk.ac.ebi.subs.biostudies.model.BioStudiesAttribute;
 import uk.ac.ebi.subs.biostudies.model.BioStudiesSubsection;
 import uk.ac.ebi.subs.data.component.Publication;
@@ -9,6 +11,8 @@ import uk.ac.ebi.subs.data.component.Publications;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Component
+@Data
 public class UsiPublicationsToBsSubsections implements Converter<Publications, List<BioStudiesSubsection>> {
     @Override
     public List<BioStudiesSubsection> convert(Publications source) {
@@ -33,14 +37,14 @@ public class UsiPublicationsToBsSubsections implements Converter<Publications, L
 
         if (publication.getDoi() != null) {
             subsection.getAttributes().add(
-                    BioStudiesAttribute.of("doi", publication.getDoi())
+                    BioStudiesAttribute.builder().name("doi").value(publication.getDoi()).build()
             );
             accno = publication.getDoi();
         }
 
         if (publication.getPubmedId() != null) {
             subsection.getAttributes().add(
-                    BioStudiesAttribute.of("pubmedId", publication.getPubmedId())
+                    BioStudiesAttribute.builder().name("pubmedId").value(publication.getPubmedId()).build()
             );
             accno = pubmedIdNumericPart(publication.getPubmedId());
         }
