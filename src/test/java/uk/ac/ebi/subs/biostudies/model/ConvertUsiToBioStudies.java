@@ -4,24 +4,27 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import uk.ac.ebi.subs.BioStudiesAgentApp;
 import uk.ac.ebi.subs.biostudies.TestUtil;
 import uk.ac.ebi.subs.biostudies.converters.UsiProjectToBsSubmission;
 import uk.ac.ebi.subs.data.submittable.Project;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RunWith(SpringJUnit4ClassRunner.class)
+@SpringBootTest(classes = {BioStudiesAgentApp.class})
 public class ConvertUsiToBioStudies {
 
     private Project usiProject;
     private BioStudiesSubmission bioStudiesSubmission;
     private BioStudiesSubmission actual;
 
-    private UsiProjectToBsSubmission usiProjectToBsSubmission = new UsiProjectToBsSubmission();
+    @Autowired
+    private UsiProjectToBsSubmission usiProjectToBsSubmission;
 
     @Test
     public void testSubmissionTopLevel() {
