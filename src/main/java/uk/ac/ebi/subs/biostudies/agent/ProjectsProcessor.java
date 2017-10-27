@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class ProjectsProcessor {
 
     @NonNull private final BioStudiesClient bioStudiesClient;
-    private UsiProjectToBsSubmission converter = new UsiProjectToBsSubmission();
+    @NonNull private UsiProjectToBsSubmission converter;
 
     public List<ProcessingCertificate> processProjects(List<Project> projects) {
         BioStudiesSession bioStudiesSession = bioStudiesClient.initialiseSession();

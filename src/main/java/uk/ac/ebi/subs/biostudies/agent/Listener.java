@@ -2,12 +2,14 @@ package uk.ac.ebi.subs.biostudies.agent;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitMessagingTemplate;
 import org.springframework.messaging.converter.MessageConverter;
 import org.springframework.stereotype.Service;
 import uk.ac.ebi.subs.data.Submission;
 import uk.ac.ebi.subs.data.submittable.Project;
 import uk.ac.ebi.subs.messaging.Exchanges;
+import uk.ac.ebi.subs.messaging.Queues;
 import uk.ac.ebi.subs.messaging.Topics;
 import uk.ac.ebi.subs.processing.ProcessingCertificate;
 import uk.ac.ebi.subs.processing.ProcessingCertificateEnvelope;
@@ -29,6 +31,7 @@ public class Listener {
         this.projectsProcessor = projectsProcessor;
     }
 
+    @RabbitListener(queues = Queues.BIOSTUDIES_AGENT)
     public void handleProjectSubmission(SubmissionEnvelope submissionEnvelope) {
         Submission submission = submissionEnvelope.getSubmission();
 
