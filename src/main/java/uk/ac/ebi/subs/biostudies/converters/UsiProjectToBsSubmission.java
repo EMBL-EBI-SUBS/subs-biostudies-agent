@@ -15,7 +15,6 @@ import java.text.SimpleDateFormat;
 @Component
 public class UsiProjectToBsSubmission implements Converter<Project,BioStudiesSubmission> {
 
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("YYYY-MM-dd");
     private static final String PROJECT_ACCESSION_PREFIX = "SUBSPRJ";
     private static final String SECTION_INTERNAL_ACCESSION = "PROJECT";
     private static final String SUBSECTION_INTERNAL_ACCESSION_PREFIX = "SECT";
@@ -32,7 +31,7 @@ public class UsiProjectToBsSubmission implements Converter<Project,BioStudiesSub
                 BioStudiesAttribute.builder().name("Title").value( source.getTitle()).build()
         );
         submission.getAttributes().add(
-                BioStudiesAttribute.builder().name("ReleaseDate").value( DATE_FORMAT.format(source.getReleaseDate())).build()
+                BioStudiesAttribute.builder().name("ReleaseDate").value( source.getReleaseDate().toString()).build()
         );
         submission.getAttributes().add(
                 BioStudiesAttribute.builder().name("DataSource").value( "USI").build()
