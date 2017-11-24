@@ -1,12 +1,12 @@
 package uk.ac.ebi.subs.biostudies.validation;
 
+import org.springframework.stereotype.Component;
 import uk.ac.ebi.subs.data.submittable.Project;
 import uk.ac.ebi.subs.validator.data.SingleValidationResult;
 import uk.ac.ebi.subs.validator.data.SingleValidationResultsEnvelope;
-import uk.ac.ebi.subs.validator.data.ValidationAuthor;
 import uk.ac.ebi.subs.validator.data.ValidationMessageEnvelope;
-import uk.ac.ebi.subs.validator.data.ValidationResult;
-import uk.ac.ebi.subs.validator.data.ValidationStatus;
+import uk.ac.ebi.subs.validator.data.structures.SingleValidationResultStatus;
+import uk.ac.ebi.subs.validator.data.structures.ValidationAuthor;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -14,7 +14,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class BioStudiesValidator {
+@Component
+public class ProjectValidator {
 
     public final int MINIMUM_TITLE_CHAR_LENGTH = 50;
     public final int MAXIMUM_TITLE_CHAR_LENGTH = 4000;
@@ -34,7 +35,7 @@ public class BioStudiesValidator {
         singleValidationResults.add(validateReleaseDate(project));
 
         List errorsList = singleValidationResults.stream()
-                .filter(singleValidationResult -> !singleValidationResult.getValidationStatus().equals(ValidationStatus.Pass))
+                .filter(singleValidationResult -> !singleValidationResult.getValidationStatus().equals(SingleValidationResultStatus.Pass))
                 .collect(Collectors.toList());
 
 
@@ -49,13 +50,13 @@ public class BioStudiesValidator {
         }
     }
 
-    private SingleValidationResult validateReleaseDate(Project project){
+    private SingleValidationResult validateReleaseDate(Project project) {
         SingleValidationResult singleValidationResult = generateDefaultSingleValidationResult(project.getId());
 
-        if (project.getReleaseDate() == null){
-            singleValidationResult.setValidationStatus(ValidationStatus.Error);
+        if (project.getReleaseDate() == null) {
+            singleValidationResult.setValidationStatus(SingleValidationResultStatus.Error);
             singleValidationResult.setMessage(
-                    MessageFormat.format(MISSING_FIELD_ERROR_FORMAT,"releaseDate")
+                    MessageFormat.format(MISSING_FIELD_ERROR_FORMAT, "releaseDate")
             );
         }
 
@@ -65,7 +66,7 @@ public class BioStudiesValidator {
     private SingleValidationResult validateTitle(Project project) {
 
         return validateRequiredString(
-                project.getTitle(), project,"title", MINIMUM_TITLE_CHAR_LENGTH, MAXIMUM_TITLE_CHAR_LENGTH
+                project.getTitle(), project, "title", MINIMUM_TITLE_CHAR_LENGTH, MAXIMUM_TITLE_CHAR_LENGTH
         );
 
 
@@ -77,17 +78,16 @@ public class BioStudiesValidator {
             String fieldName,
             int minimumCharLength,
             int maximumCharLength
-    ){
+    ) {
         SingleValidationResult singleValidationResult = generateDefaultSingleValidationResult(project.getId());
 
         if (target == null || target.isEmpty()) {
-            singleValidationResult.setValidationStatus(ValidationStatus.Error);
+            singleValidationResult.setValidationStatus(SingleValidationResultStatus.Error);
             singleValidationResult.setMessage(
-                    MessageFormat.format(MISSING_FIELD_ERROR_FORMAT,fieldName)
+                    MessageFormat.format(MISSING_FIELD_ERROR_FORMAT, fieldName)
             );
-        }
-        else if (target.trim().length() < minimumCharLength || target.trim().length() > maximumCharLength){
-            singleValidationResult.setValidationStatus(ValidationStatus.Error);
+        } else if (target.trim().length() < minimumCharLength || target.trim().length() > maximumCharLength) {
+            singleValidationResult.setValidationStatus(SingleValidationResultStatus.Error);
             singleValidationResult.setMessage(
                     MessageFormat.format(
                             STRING_LENGTH_ERROR_FORMAT,
@@ -112,15 +112,13 @@ public class BioStudiesValidator {
     }
 
 
-
-
     private SingleValidationResult generateDefaultSingleValidationResult(String sampleId) {
-        SingleValidationResult result = new SingleValidationResult(ValidationAuthor.Core, sampleId);//TODO update author to biostudies
-        result.setValidationStatus(ValidationStatus.Pass);
+        SingleValidationResult result = new SingleValidationResult(ValidationAuthor.BioStudies, sampleId);//TODO update author to biostudies
+        result.setValidationStatus(SingleValidationResultStatus.Pass);
         return result;
     }
 
     private SingleValidationResultsEnvelope generateSingleValidationResultsEnvelope(List<SingleValidationResult> singleValidationResults, ValidationMessageEnvelope envelope) {
-        return new SingleValidationResultsEnvelope(singleValidationResults, envelope.getValidationResultVersion(), envelope.getValidationResultUUID(), ValidationAuthor.Biosamples);
+        return new SingleValidationResultsEnvelope(singleValidationResults, envelope.getValidationResultVersion(), envelope.getValidationResultUUID(), ValidationAuthor.BioStudies);
     }
 }

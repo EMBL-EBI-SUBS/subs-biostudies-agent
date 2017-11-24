@@ -18,7 +18,7 @@ import uk.ac.ebi.subs.biostudies.model.BioStudiesSubmission;
 import java.util.UUID;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = BioStudiesAgentApp.class)
+@SpringBootTest(classes = ClientTestApp.class)
 @Category(BioStudiesApiDependentTest.class)
 public class BioStudiesClientTest {
 

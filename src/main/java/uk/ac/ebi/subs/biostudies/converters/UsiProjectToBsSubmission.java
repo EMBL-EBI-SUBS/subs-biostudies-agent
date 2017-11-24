@@ -9,10 +9,9 @@ import uk.ac.ebi.subs.biostudies.model.BioStudiesSubmission;
 import uk.ac.ebi.subs.biostudies.model.BioStudiesSubsection;
 import uk.ac.ebi.subs.data.submittable.Project;
 
-import java.text.SimpleDateFormat;
 
-@Data
 @Component
+@Data
 public class UsiProjectToBsSubmission implements Converter<Project,BioStudiesSubmission> {
 
     private static final String PROJECT_ACCESSION_PREFIX = "SUBSPRJ";
