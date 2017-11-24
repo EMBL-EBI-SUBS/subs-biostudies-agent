@@ -19,13 +19,13 @@ import java.util.List;
 
 
 @Service
-public class Listener {
-    private static final Logger logger = LoggerFactory.getLogger(Listener.class);
+public class AgentListener {
+    private static final Logger logger = LoggerFactory.getLogger(AgentListener.class);
 
     private RabbitMessagingTemplate rabbitMessagingTemplate;
     private ProjectsProcessor projectsProcessor;
 
-    public Listener(ProjectsProcessor projectsProcessor, RabbitMessagingTemplate rabbitMessagingTemplate, MessageConverter messageConverter) {
+    public AgentListener(ProjectsProcessor projectsProcessor, RabbitMessagingTemplate rabbitMessagingTemplate, MessageConverter messageConverter) {
         this.rabbitMessagingTemplate = rabbitMessagingTemplate;
         this.rabbitMessagingTemplate.setMessageConverter(messageConverter);
         this.projectsProcessor = projectsProcessor;

@@ -4,26 +4,27 @@ package uk.ac.ebi.subs.biostudies.validator;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import uk.ac.ebi.subs.biostudies.validation.BioStudiesValidator;
+import uk.ac.ebi.subs.biostudies.validation.ProjectValidator;
 import uk.ac.ebi.subs.data.component.Team;
 import uk.ac.ebi.subs.data.submittable.Project;
 import uk.ac.ebi.subs.validator.data.SingleValidationResultsEnvelope;
 import uk.ac.ebi.subs.validator.data.ValidationMessageEnvelope;
-import uk.ac.ebi.subs.validator.data.ValidationStatus;
+import uk.ac.ebi.subs.validator.data.structures.SingleValidationResultStatus;
+
 
 import java.time.LocalDate;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
-public class BioStudiesValidatorTest {
+public class ProjectValidatorTest {
 
-    private BioStudiesValidator validator;
+    private ProjectValidator validator;
     private String gibberishText;
 
 
     @Before
     public void buildUp() {
-        validator = new BioStudiesValidator();
+        validator = new ProjectValidator();
         gibberishText = makeText(100);
     }
 
@@ -43,7 +44,7 @@ public class BioStudiesValidatorTest {
 
         Assert.assertEquals(1, validationResultsEnvelope.getSingleValidationResults().size());
 
-        Assert.assertTrue(validationResultsEnvelope.getSingleValidationResults().get(0).getValidationStatus().equals(ValidationStatus.Pass));
+        Assert.assertTrue(validationResultsEnvelope.getSingleValidationResults().get(0).getValidationStatus().equals(SingleValidationResultStatus.Pass));
 
         Assert.assertEquals(null, validationResultsEnvelope.getSingleValidationResults().get(0).getMessage());
     }
@@ -66,7 +67,7 @@ public class BioStudiesValidatorTest {
         validationResultsEnvelope.getSingleValidationResults().stream()
                 .forEach(result -> {
 
-                    Assert.assertEquals(ValidationStatus.Error, result.getValidationStatus());
+                    Assert.assertEquals(SingleValidationResultStatus.Error, result.getValidationStatus());
                     Assert.assertTrue(result.getMessage() != null);
 
                 });
@@ -91,7 +92,7 @@ public class BioStudiesValidatorTest {
         validationResultsEnvelope.getSingleValidationResults().stream()
                 .forEach(result -> {
 
-                    Assert.assertEquals(ValidationStatus.Error, result.getValidationStatus());
+                    Assert.assertEquals(SingleValidationResultStatus.Error, result.getValidationStatus());
                     Assert.assertTrue(result.getMessage() != null);
 
                 });
