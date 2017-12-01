@@ -21,13 +21,11 @@ public class ProjectValidatorTest {
     private ProjectValidator validator;
     private String gibberishText;
 
-
     @Before
     public void buildUp() {
         validator = new ProjectValidator();
         gibberishText = makeText(100);
     }
-
 
     @Test
     public void testHappyTrail() {
@@ -71,7 +69,6 @@ public class ProjectValidatorTest {
                     Assert.assertTrue(result.getMessage() != null);
 
                 });
-
     }
 
     @Test
@@ -98,7 +95,6 @@ public class ProjectValidatorTest {
                 });
     }
 
-
     static Project project() {
         Project p = new Project();
         p.setTeam(Team.build("test"));
@@ -121,7 +117,6 @@ public class ProjectValidatorTest {
         IntStream.range(0, desiredLength)
                 .map(i -> (char) i)
                 .forEach(c -> buffer.append(c));
-
 
         return buffer.toString();
     }

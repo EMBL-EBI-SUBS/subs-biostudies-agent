@@ -4,11 +4,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import uk.ac.ebi.subs.BioStudiesApiDependentTest;
 import uk.ac.ebi.subs.biostudies.TestUtil;
 import uk.ac.ebi.subs.biostudies.model.BioStudiesSubmission;
 
@@ -23,6 +25,7 @@ import static org.junit.Assert.assertTrue;
         BioStudiesConfig.class,
         BioStudiesClientTestContextConfiguration.class
 })
+@Category(BioStudiesApiDependentTest.class)
 public class BioStudiesClientTest {
 
     @Autowired
@@ -91,6 +94,7 @@ public class BioStudiesClientTest {
         bioStudiesSubmission.setAccno("SUBSPRJ1");
 
         SubmissionReport response = session.update(bioStudiesSubmission);
+        System.out.println(response);
 
         assertEquals("OK", response.getStatus());
         assertNotNull(response.findAccession());

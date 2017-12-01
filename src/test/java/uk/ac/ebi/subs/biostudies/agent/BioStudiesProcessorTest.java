@@ -7,7 +7,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.ac.ebi.subs.biostudies.client.BioStudiesClient;
 import uk.ac.ebi.subs.biostudies.client.BioStudiesSession;
 import uk.ac.ebi.subs.biostudies.client.SubmissionReport;
@@ -24,21 +24,20 @@ import java.util.List;
 
 import static org.mockito.Mockito.when;
 
-@RunWith(SpringRunner.class)
-
+@RunWith(SpringJUnit4ClassRunner.class)
 public class BioStudiesProcessorTest {
 
     @Mock
-    BioStudiesClient bioStudiesClient;
+    private BioStudiesClient bioStudiesClient;
     @Mock
-    BioStudiesSession bioStudiesSession;
+    private BioStudiesSession bioStudiesSession;
     @Mock
-    UsiProjectToBsSubmission usiProjectToBsSubmission;
+    private UsiProjectToBsSubmission usiProjectToBsSubmission;
     @Mock
-    SubmissionReport submissionReport;
+    private SubmissionReport submissionReport;
 
-    List<Project> projects;
-    Project project;
+    private List<Project> projects;
+    private Project project;
 
     @InjectMocks
     @Spy
@@ -52,13 +51,10 @@ public class BioStudiesProcessorTest {
         project.setReleaseDate(LocalDate.MIN);
 
         projects = Arrays.asList(project);
-
-
     }
 
     @Test
     public void testCreateOfNewProject() {
-
         String accession = "SO1"; //totally unrepresentative accession style
 
         BioStudiesSubmission bioStudiesSubmission = new BioStudiesSubmission();
@@ -81,13 +77,10 @@ public class BioStudiesProcessorTest {
         List<ProcessingCertificate> actualCerts = projectsProcessor.processProjects(projects);
 
         Assert.assertEquals(expectedCerts, actualCerts);
-
     }
 
     @Test
     public void testUpdateOfExistingProject() {
-
-
         String accession = "SO1"; //totally unrepresentative accession style
         project.setAccession(accession);
 
@@ -111,7 +104,6 @@ public class BioStudiesProcessorTest {
         List<ProcessingCertificate> actualCerts = projectsProcessor.processProjects(projects);
 
         Assert.assertEquals(expectedCerts, actualCerts);
-
     }
 
 }

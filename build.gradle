@@ -11,9 +11,8 @@ buildscript {
     }
 }
 
-
 group 'uk.ac.ebi.subs'
-version '0.0.1-SNAPSHOT'
+version '0.1.0-SNAPSHOT'
 
 apply plugin: 'idea'
 apply plugin: 'java'
@@ -46,7 +45,7 @@ dependencies {
     testCompile("commons-io:commons-io:2.5")
 }
 
-task ciTest(type: Test) {
+task externalCiTest(type: Test) {
     useJUnit {
         excludeCategories 'uk.ac.ebi.subs.BioStudiesApiDependentTest'
     }
@@ -54,9 +53,9 @@ task ciTest(type: Test) {
         exceptionFormat = 'full'
     }
 }
-configure(ciTest){
+configure(externalCiTest){
     group = 'verification'
-    description = 'Run tests suitable for a continuous integration environment'
+    description = 'Run tests suitable for our external continuous integration environment.'
 }
 
 
