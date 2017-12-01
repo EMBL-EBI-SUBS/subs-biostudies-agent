@@ -47,7 +47,7 @@ dependencies {
 
 task externalCiTest(type: Test) {
     useJUnit {
-        excludeCategories 'uk.ac.ebi.subs.BioStudiesApiDependentTest'
+        excludeCategories 'uk.ac.ebi.subs.biostudies.BioStudiesApiDependentTest'
     }
     testLogging {
         exceptionFormat = 'full'

@@ -1,6 +1,5 @@
 package uk.ac.ebi.subs.biostudies.validator;
 
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,7 +9,6 @@ import uk.ac.ebi.subs.data.submittable.Project;
 import uk.ac.ebi.subs.validator.data.SingleValidationResultsEnvelope;
 import uk.ac.ebi.subs.validator.data.ValidationMessageEnvelope;
 import uk.ac.ebi.subs.validator.data.structures.SingleValidationResultStatus;
-
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -54,7 +52,6 @@ public class ProjectValidatorTest {
         p.setTitle("short");
         p.setDescription("short");
 
-
         ValidationMessageEnvelope<Project> envelope = new ValidationMessageEnvelope<>();
         envelope.setEntityToValidate(p);
 
@@ -77,7 +74,6 @@ public class ProjectValidatorTest {
         p.setReleaseDate(null);
         p.setTitle(null);
         p.setDescription(null);
-
 
         ValidationMessageEnvelope<Project> envelope = new ValidationMessageEnvelope<>();
         envelope.setEntityToValidate(p);
