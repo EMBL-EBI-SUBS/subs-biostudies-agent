@@ -7,23 +7,21 @@ import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitMessagingTemplate;
 import org.springframework.stereotype.Service;
-import uk.ac.ebi.subs.data.client.Project;
 import uk.ac.ebi.subs.messaging.Exchanges;
 import uk.ac.ebi.subs.validator.data.ProjectValidationMessageEnvelope;
 import uk.ac.ebi.subs.validator.data.SingleValidationResult;
 import uk.ac.ebi.subs.validator.data.SingleValidationResultsEnvelope;
 import uk.ac.ebi.subs.validator.data.structures.SingleValidationResultStatus;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
-import static uk.ac.ebi.subs.biostudies.validation.ValidationMessaging.*;
+import static uk.ac.ebi.subs.biostudies.validation.ValidationMessaging.BIOSTUDIES_PROJECT_VALIDATION;
+import static uk.ac.ebi.subs.biostudies.validation.ValidationMessaging.EVENT_VALIDATION_ERROR;
+import static uk.ac.ebi.subs.biostudies.validation.ValidationMessaging.EVENT_VALIDATION_SUCCESS;
 
 @Service
 @Data
 public class ValidationListener {
-
     private static final Logger logger = LoggerFactory.getLogger(ValidationListener.class);
 
     @NonNull
@@ -31,7 +29,6 @@ public class ValidationListener {
 
     @NonNull
     private ProjectValidator validator;
-
 
     @RabbitListener(queues = BIOSTUDIES_PROJECT_VALIDATION)
     public void handleValidationRequest(ProjectValidationMessageEnvelope envelope) {

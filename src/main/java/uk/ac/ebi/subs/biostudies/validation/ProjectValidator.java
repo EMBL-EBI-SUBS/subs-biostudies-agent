@@ -25,7 +25,6 @@ public class ProjectValidator {
     public final String MISSING_FIELD_ERROR_FORMAT = "A project must have a {0}.";
     public final String STRING_LENGTH_ERROR_FORMAT = "A project {0} must be between {1} and {2} characters long.";
 
-
     public SingleValidationResultsEnvelope validateProject(ValidationMessageEnvelope<Project> envelope) {
         Project project = envelope.getEntityToValidate();
         List<SingleValidationResult> singleValidationResults = new ArrayList<>();
@@ -38,7 +37,6 @@ public class ProjectValidator {
                 .filter(singleValidationResult -> !singleValidationResult.getValidationStatus().equals(SingleValidationResultStatus.Pass))
                 .collect(Collectors.toList());
 
-
         if (errorsList.isEmpty()) {
             return generateSingleValidationResultsEnvelope(
                     Arrays.asList(generateDefaultSingleValidationResult(project.getId())),
@@ -48,6 +46,23 @@ public class ProjectValidator {
         } else {
             return generateSingleValidationResultsEnvelope(errorsList, envelope);
         }
+    }
+
+    private SingleValidationResult validateTitle(Project project) {
+
+        return validateRequiredString(
+                project.getTitle(), project, "title", MINIMUM_TITLE_CHAR_LENGTH, MAXIMUM_TITLE_CHAR_LENGTH
+        );
+    }
+
+    private SingleValidationResult validateDescription(Project project) {
+        return validateRequiredString(
+                project.getDescription(),
+                project,
+                "description",
+                MINIMUM_DESCRIPTION_CHAR_LENGTH,
+                MAXIMUM_DESCRIPTION_CHAR_LENGTH
+        );
     }
 
     private SingleValidationResult validateReleaseDate(Project project) {
@@ -61,15 +76,6 @@ public class ProjectValidator {
         }
 
         return singleValidationResult;
-    }
-
-    private SingleValidationResult validateTitle(Project project) {
-
-        return validateRequiredString(
-                project.getTitle(), project, "title", MINIMUM_TITLE_CHAR_LENGTH, MAXIMUM_TITLE_CHAR_LENGTH
-        );
-
-
     }
 
     private SingleValidationResult validateRequiredString(
@@ -101,19 +107,8 @@ public class ProjectValidator {
         return singleValidationResult;
     }
 
-    private SingleValidationResult validateDescription(Project project) {
-        return validateRequiredString(
-                project.getDescription(),
-                project,
-                "description",
-                MINIMUM_DESCRIPTION_CHAR_LENGTH,
-                MAXIMUM_DESCRIPTION_CHAR_LENGTH
-        );
-    }
-
-
     private SingleValidationResult generateDefaultSingleValidationResult(String sampleId) {
-        SingleValidationResult result = new SingleValidationResult(ValidationAuthor.BioStudies, sampleId);//TODO update author to biostudies
+        SingleValidationResult result = new SingleValidationResult(ValidationAuthor.BioStudies, sampleId);
         result.setValidationStatus(SingleValidationResultStatus.Pass);
         return result;
     }
