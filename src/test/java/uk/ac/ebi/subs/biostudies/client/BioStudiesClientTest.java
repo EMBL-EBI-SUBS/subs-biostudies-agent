@@ -1,34 +1,37 @@
 package uk.ac.ebi.subs.biostudies.client;
 
-import org.junit.Assert;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import uk.ac.ebi.subs.BioStudiesAgentApp;
-import uk.ac.ebi.subs.BioStudiesApiDependentTest;
 import uk.ac.ebi.subs.biostudies.TestUtil;
 import uk.ac.ebi.subs.biostudies.model.BioStudiesSubmission;
 
 import java.util.UUID;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = ClientTestApp.class)
-@Category(BioStudiesApiDependentTest.class)
+@SpringBootTest(classes = {
+        BioStudiesConfig.class,
+        BioStudiesClientTestContextConfiguration.class
+})
 public class BioStudiesClientTest {
 
     @Autowired
     private BioStudiesConfig config;
+
     private BioStudiesSubmission bioStudiesSubmission;
 
     @Before
     public void buildup() {
-
         bioStudiesSubmission = (BioStudiesSubmission) TestUtil.loadObjectFromJson(
                 "exampleProject_biostudies.json", BioStudiesSubmission.class
         );
@@ -39,13 +42,13 @@ public class BioStudiesClientTest {
         BioStudiesClient client = new BioStudiesClient(config);
         BioStudiesSession session = client.initialiseSession();
 
-        Assert.assertEquals("OK", session.getBioStudiesLoginResponse().getStatus());
-        Assert.assertNotNull(session.getBioStudiesLoginResponse().getSessid());
+        assertEquals("OK", session.getBioStudiesLoginResponse().getStatus());
+        assertNotNull(session.getBioStudiesLoginResponse().getSessid());
         System.out.println(session);
     }
 
-
-    @Rule public ExpectedException expectedException = ExpectedException.none();
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
 
     @Test
     public void loginFailure() {
@@ -62,19 +65,19 @@ public class BioStudiesClientTest {
         BioStudiesSession session = client.initialiseSession();
 
         //don't expect to get here
-        Assert.assertNotNull(session);
+        assertNotNull(session);
     }
 
     @Test
-    public void createGood() {
+    public void createGood() throws JsonProcessingException {
         BioStudiesClient client = new BioStudiesClient(config);
         BioStudiesSession session = client.initialiseSession();
 
         SubmissionReport response = session.create(bioStudiesSubmission);
 
-        Assert.assertEquals("OK", response.getStatus());
-        Assert.assertNotNull(response.findAccession());
-        Assert.assertTrue(response.findAccession().startsWith("SUBSPRJ"));
+        assertEquals("OK", response.getStatus());
+        assertNotNull(response.findAccession());
+        assertTrue(response.findAccession().startsWith("SUBSPRJ"));
 
         System.out.println(response.findAccession());
 
@@ -89,9 +92,9 @@ public class BioStudiesClientTest {
 
         SubmissionReport response = session.update(bioStudiesSubmission);
 
-        Assert.assertEquals("OK", response.getStatus());
-        Assert.assertNotNull(response.findAccession());
-        Assert.assertEquals("SUBSPRJ1",response.findAccession());
+        assertEquals("OK", response.getStatus());
+        assertNotNull(response.findAccession());
+        assertEquals("SUBSPRJ1",response.findAccession());
 
         System.out.println(response.findAccession());
     }

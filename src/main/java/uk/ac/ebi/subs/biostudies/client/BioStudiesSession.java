@@ -49,7 +49,6 @@ public class BioStudiesSession {
         BioStudiesSubmissionWrapper wrapper = new BioStudiesSubmissionWrapper();
         wrapper.getSubmissions().add(bioStudiesSubmission);
 
-
         HttpEntity<SubmissionReport> response;
         try {
             response = restTemplate.postForEntity(
