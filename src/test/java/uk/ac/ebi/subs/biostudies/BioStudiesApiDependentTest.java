@@ -1,4 +1,4 @@
-package uk.ac.ebi.subs;
+package uk.ac.ebi.subs.biostudies;
 
 public interface BioStudiesApiDependentTest {
 }

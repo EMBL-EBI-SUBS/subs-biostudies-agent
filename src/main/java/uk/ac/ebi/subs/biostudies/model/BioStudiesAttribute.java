@@ -14,4 +14,28 @@ public class BioStudiesAttribute {
 
     @Builder.Default
     private boolean isReference = false;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public boolean getIsReference() {
+        return isReference;
+    }
+
+    public void setIsReference(boolean reference) {
+        isReference = reference;
+    }
 }

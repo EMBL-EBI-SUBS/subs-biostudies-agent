@@ -11,9 +11,8 @@ buildscript {
     }
 }
 
-
 group 'uk.ac.ebi.subs'
-version '0.0.1-SNAPSHOT'
+version '0.1.0-SNAPSHOT'
 
 apply plugin: 'idea'
 apply plugin: 'java'
@@ -34,37 +33,29 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'org.projectlombok:lombok:1.16.18'
-    compile("uk.ac.ebi.subs:subs-processing-model:0.1.1-SNAPSHOT"){
-        exclude group: 'org.springframework.boot', module :'spring-boot-starter-data-mongodb'
-    }
+    compile("uk.ac.ebi.subs:subs-processing-model:1.0.1-SNAPSHOT")
+    compile("uk.ac.ebi.subs:subs-messaging:0.4.0-SNAPSHOT")
+    compile ("uk.ac.ebi.subs:validator-common:1.0.1-SNAPSHOT")
 
-    compile("uk.ac.ebi.subs:subs-data-model:0.2.0-SNAPSHOT"){
-        exclude group: 'org.springframework.boot', module :'spring-boot-starter-data-mongodb'
-    }
-    compile("uk.ac.ebi.subs:subs-messaging:0.4.0-SNAPSHOT"){
-        exclude group: 'org.springframework.boot', module :'spring-boot-starter-data-mongodb'
-    }
+    compileOnly('org.projectlombok:lombok:1.16.18')
     optional("org.springframework.boot:spring-boot-configuration-processor")
-    testCompile("org.springframework.boot:spring-boot-starter-test")
-    testCompile("commons-io:commons-io:2.5")
 
-    compile ("uk.ac.ebi.subs:validator-common:0.1.0-SNAPSHOT") {
-        exclude group: 'org.springframework.boot', module :'spring-boot-starter-data-mongodb'
-    }
+    testCompile("org.springframework.boot:spring-boot-starter-test")
+    testCompile("org.mockito:mockito-core:2.+")
+    testCompile("commons-io:commons-io:2.5")
 }
 
-task ciTest(type: Test) {
+task externalCiTest(type: Test) {
     useJUnit {
-        excludeCategories 'uk.ac.ebi.subs.BioStudiesApiDependentTest'
+        excludeCategories 'uk.ac.ebi.subs.biostudies.BioStudiesApiDependentTest'
     }
     testLogging {
         exceptionFormat = 'full'
     }
 }
-configure(ciTest){
+configure(externalCiTest){
     group = 'verification'
-    description = 'Run tests suitable for a continuous integration environment'
+    description = 'Run tests suitable for our external continuous integration environment.'
 }
 
 

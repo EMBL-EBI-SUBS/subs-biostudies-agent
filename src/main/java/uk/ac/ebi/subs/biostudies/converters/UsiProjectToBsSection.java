@@ -8,10 +8,6 @@ import uk.ac.ebi.subs.biostudies.model.BioStudiesAttribute;
 import uk.ac.ebi.subs.biostudies.model.BioStudiesSection;
 import uk.ac.ebi.subs.data.submittable.Project;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Component
 @Data
 public class UsiProjectToBsSection implements Converter<Project, BioStudiesSection> {
