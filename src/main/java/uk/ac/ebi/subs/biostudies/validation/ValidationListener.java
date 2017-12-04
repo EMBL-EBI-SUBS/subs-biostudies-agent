@@ -1,7 +1,6 @@
 package uk.ac.ebi.subs.biostudies.validation;
 
 import lombok.Data;
-import lombok.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -24,11 +23,13 @@ import static uk.ac.ebi.subs.biostudies.validation.ValidationMessaging.EVENT_VAL
 public class ValidationListener {
     private static final Logger logger = LoggerFactory.getLogger(ValidationListener.class);
 
-    @NonNull
     private RabbitMessagingTemplate rabbitMessagingTemplate;
-
-    @NonNull
     private ProjectValidator validator;
+
+    public ValidationListener(RabbitMessagingTemplate rabbitMessagingTemplate, ProjectValidator validator) {
+        this.rabbitMessagingTemplate = rabbitMessagingTemplate;
+        this.validator = validator;
+    }
 
     @RabbitListener(queues = BIOSTUDIES_PROJECT_VALIDATION)
     public void handleValidationRequest(ProjectValidationMessageEnvelope envelope) {

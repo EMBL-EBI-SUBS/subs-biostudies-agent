@@ -20,7 +20,7 @@ public class ValidationMessaging {
 
 
     /**
-     * RabbitMQ related messaging configuration for the Biosamples queue(s) and binding(s).
+     * RabbitMQ related messaging configuration for the Biostudies queue(s) and binding(s).
      *
      * Created by karoly on 06/07/2017.
      */

@@ -11,7 +11,6 @@ import uk.ac.ebi.subs.validator.data.ValidationMessageEnvelope;
 import uk.ac.ebi.subs.validator.data.structures.SingleValidationResultStatus;
 
 import java.time.LocalDate;
-import java.util.UUID;
 import java.util.stream.IntStream;
 
 public class ProjectValidatorTest {
@@ -97,14 +96,6 @@ public class ProjectValidatorTest {
         p.setAlias("alias");
 
         return p;
-    }
-
-    static ValidationMessageEnvelope<Project> generateValidationMessageEnvelope(Project project) {
-        return new ValidationMessageEnvelope<Project>(
-                UUID.randomUUID().toString(),
-                1,
-                project
-        );
     }
 
     static String makeText(int desiredLength) {

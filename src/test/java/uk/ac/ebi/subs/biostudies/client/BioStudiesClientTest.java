@@ -9,7 +9,7 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 import uk.ac.ebi.subs.biostudies.BioStudiesApiDependentTest;
 import uk.ac.ebi.subs.biostudies.TestUtil;
 import uk.ac.ebi.subs.biostudies.model.BioStudiesSubmission;
@@ -20,7 +20,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(SpringRunner.class)
 @SpringBootTest(classes = {
         BioStudiesConfig.class,
         BioStudiesClientTestContextConfiguration.class
@@ -65,10 +65,7 @@ public class BioStudiesClientTest {
         badConfig.getAuth().setPassword(UUID.randomUUID().toString());
 
         BioStudiesClient client = new BioStudiesClient(badConfig);
-        BioStudiesSession session = client.initialiseSession();
-
-        //don't expect to get here
-        assertNotNull(session);
+        client.initialiseSession();
     }
 
     @Test
@@ -94,7 +91,6 @@ public class BioStudiesClientTest {
         bioStudiesSubmission.setAccno("SUBSPRJ1");
 
         SubmissionReport response = session.update(bioStudiesSubmission);
-        System.out.println(response);
 
         assertEquals("OK", response.getStatus());
         assertNotNull(response.findAccession());

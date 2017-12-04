@@ -7,7 +7,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 import uk.ac.ebi.subs.biostudies.client.BioStudiesClient;
 import uk.ac.ebi.subs.biostudies.client.BioStudiesSession;
 import uk.ac.ebi.subs.biostudies.client.SubmissionReport;
@@ -24,7 +24,7 @@ import java.util.List;
 
 import static org.mockito.Mockito.when;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(SpringRunner.class)
 public class BioStudiesProcessorTest {
 
     @Mock
