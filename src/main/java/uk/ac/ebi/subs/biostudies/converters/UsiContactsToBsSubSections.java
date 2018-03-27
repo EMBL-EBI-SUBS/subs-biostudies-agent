@@ -1,6 +1,8 @@
 package uk.ac.ebi.subs.biostudies.converters;
 
+import lombok.Data;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
 import uk.ac.ebi.subs.biostudies.model.BioStudiesAttribute;
 import uk.ac.ebi.subs.biostudies.model.BioStudiesSubsection;
 import uk.ac.ebi.subs.data.component.Contact;
@@ -9,6 +11,8 @@ import uk.ac.ebi.subs.data.component.Contacts;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Component
+@Data
 public class UsiContactsToBsSubSections implements Converter<Contacts, List<BioStudiesSubsection>> {
 
     @Override
@@ -16,7 +20,7 @@ public class UsiContactsToBsSubSections implements Converter<Contacts, List<BioS
         Map<String, String> affiliationsToRefNames = affiliationRefs(source.getContacts());
 
         List<BioStudiesSubsection> subsections = source.getContacts().stream()
-                .map(contact -> contactToSubsection(contact,affiliationsToRefNames))
+                .map(contact -> contactToSubsection(contact, affiliationsToRefNames))
                 .collect(Collectors.toList());
 
         subsections.addAll(
@@ -33,46 +37,49 @@ public class UsiContactsToBsSubSections implements Converter<Contacts, List<BioS
 
         subsection.setType("Organisation");
         subsection.setAccno(affiliationRefName.getValue());
-        subsection.getAttributes().add(BioStudiesAttribute.of("Name",affiliationRefName.getKey()));
+        subsection.getAttributes().add(
+                BioStudiesAttribute.builder()
+                        .name("Name")
+                        .value(affiliationRefName.getKey())
+                        .build());
 
         return subsection;
     }
 
 
-    private BioStudiesSubsection contactToSubsection(Contact contact, Map<String,String> affiliationRefNames) {
+    private BioStudiesSubsection contactToSubsection(Contact contact, Map<String, String> affiliationRefNames) {
         BioStudiesSubsection subsection = new BioStudiesSubsection();
         subsection.setType("Author");
 
-        if (contactName(contact) != null){
-            subsection.getAttributes().add(BioStudiesAttribute.of("Name",contactName(contact)));
+        if (contactName(contact) != null) {
+            subsection.getAttributes().add(BioStudiesAttribute.builder().name("Name").value(contactName(contact)).build());
         }
 
-        if (contact.getFirstName() != null){
-            subsection.getAttributes().add(BioStudiesAttribute.of("firstName",contact.getFirstName()));
+        if (contact.getFirstName() != null) {
+            subsection.getAttributes().add(BioStudiesAttribute.builder().name("firstName").value(contact.getFirstName()).build());
         }
-        if (contact.getMiddleInitials() != null){
-            subsection.getAttributes().add(BioStudiesAttribute.of("middleInitials",contact.getMiddleInitials()));
+        if (contact.getMiddleInitials() != null) {
+            subsection.getAttributes().add(BioStudiesAttribute.builder().name("middleInitials").value(contact.getMiddleInitials()).build());
         }
-        if (contact.getLastName() != null){
-            subsection.getAttributes().add(BioStudiesAttribute.of("lastName",contact.getLastName()));
+        if (contact.getLastName() != null) {
+            subsection.getAttributes().add(BioStudiesAttribute.builder().name("lastName").value(contact.getLastName()).build());
         }
-        if (contact.getEmail() != null){
-            subsection.getAttributes().add(BioStudiesAttribute.of("E-mail",contact.getEmail()));
+        if (contact.getEmail() != null) {
+            subsection.getAttributes().add(BioStudiesAttribute.builder().name("E-mail").value(contact.getEmail()).build());
         }
-        if (contact.getAddress() != null){
-            subsection.getAttributes().add(BioStudiesAttribute.of("address",contact.getAddress()));
+        if (contact.getAddress() != null) {
+            subsection.getAttributes().add(BioStudiesAttribute.builder().name("address").value(contact.getAddress()).build());
         }
-        if (contact.getPhone() != null){
-            subsection.getAttributes().add(BioStudiesAttribute.of("phone",contact.getPhone()));
+        if (contact.getPhone() != null) {
+            subsection.getAttributes().add(BioStudiesAttribute.builder().name("phone").value(contact.getPhone()).build());
         }
-        if (contact.getRoles() != null && !contact.getRoles().isEmpty()){
-            subsection.getAttributes().add(BioStudiesAttribute.of("role", String.join(", ",contact.getRoles())));
+        if (contact.getRoles() != null && !contact.getRoles().isEmpty()) {
+            subsection.getAttributes().add(BioStudiesAttribute.builder().name("role").value(String.join(", ", contact.getRoles())).build());
         }
-        if (contact.getAffiliation() != null && affiliationRefNames.containsKey(contact.getAffiliation())){
+        if (contact.getAffiliation() != null && affiliationRefNames.containsKey(contact.getAffiliation())) {
             String affiliationRef = affiliationRefNames.get(contact.getAffiliation());
-            BioStudiesAttribute affiliationAttribute = BioStudiesAttribute.of("Organisation", affiliationRef);
-            affiliationAttribute.setIsReference(true);
-            subsection.getAttributes().add(affiliationAttribute);
+
+            subsection.getAttributes().add(BioStudiesAttribute.builder().name("Organisation").value(affiliationRef).isReference(true).build());
         }
 
 
@@ -82,18 +89,18 @@ public class UsiContactsToBsSubSections implements Converter<Contacts, List<BioS
     private String contactName(Contact contact) {
         List<String> nameElements = new ArrayList<>();
 
-        if (contact.getFirstName() != null){
+        if (contact.getFirstName() != null) {
             nameElements.add(contact.getFirstName());
         }
-        if (contact.getMiddleInitials() != null){
+        if (contact.getMiddleInitials() != null) {
             nameElements.add(contact.getMiddleInitials());
         }
-        if (contact.getLastName() != null){
+        if (contact.getLastName() != null) {
             nameElements.add(contact.getLastName());
         }
 
-        String name = String.join(" ",nameElements);
-        if (name.isEmpty()){
+        String name = String.join(" ", nameElements);
+        if (name.isEmpty()) {
             return null;
         }
         return name;

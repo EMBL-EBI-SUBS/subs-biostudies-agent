@@ -11,9 +11,8 @@ buildscript {
     }
 }
 
-
 group 'uk.ac.ebi.subs'
-version '0.0.1-SNAPSHOT'
+version '0.1.1-SNAPSHOT'
 
 apply plugin: 'idea'
 apply plugin: 'java'
@@ -26,7 +25,7 @@ apply plugin: 'propdeps-maven'
 apply plugin: 'propdeps-idea'
 apply plugin: 'propdeps-eclipse'
 
-mainClassName = "uk.ac.ebi.subs.BioStudiesAgentApp"
+mainClassName = "uk.ac.ebi.subs.biostudies.BioStudiesAgentApp"
 
 repositories {
     mavenCentral()
@@ -34,13 +33,29 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'org.projectlombok:lombok:1.16.18'
-    compile("uk.ac.ebi.subs:subs-processing-model:0.1.1-SNAPSHOT")
-    compile("uk.ac.ebi.subs:subs-data-model:0.1.0-SNAPSHOT")
-    compile("uk.ac.ebi.subs:subs-messaging:0.1.1-SNAPSHOT")
+    compile("uk.ac.ebi.subs:subs-processing-model:1.0.1-SNAPSHOT")
+    compile("uk.ac.ebi.subs:subs-messaging:0.4.0-SNAPSHOT")
+    compile ("uk.ac.ebi.subs:validator-common:1.0.1-SNAPSHOT")
+
+    compileOnly('org.projectlombok:lombok:1.16.18')
     optional("org.springframework.boot:spring-boot-configuration-processor")
+
     testCompile("org.springframework.boot:spring-boot-starter-test")
+    testCompile("org.mockito:mockito-core:2.+")
     testCompile("commons-io:commons-io:2.5")
+}
+
+task externalCiTest(type: Test) {
+    useJUnit {
+        excludeCategories 'uk.ac.ebi.subs.biostudies.BioStudiesApiDependentTest'
+    }
+    testLogging {
+        exceptionFormat = 'full'
+    }
+}
+configure(externalCiTest){
+    group = 'verification'
+    description = 'Run tests suitable for our external continuous integration environment.'
 }
 
 springBoot {
@@ -63,7 +78,6 @@ task printJarName {
     doLast {
         println "$jar.archivePath.name"
     }
-
 }
 
 task printJarFullPath {
@@ -72,33 +86,52 @@ task printJarFullPath {
     }
 }
 
+ext.gradle_env = hasProperty('env') ? env : 'dev'
+
+def devDeployHostName = hasProperty(project.name + "DevDeployTarget") ? getProperty(project.name + "DevDeployTarget") : 'localhost'
+def testDeployHostName = hasProperty(project.name + "TestDeployTarget") ? getProperty(project.name + "TestDeployTarget") : 'localhost'
+def prodDeployHostName = hasProperty(project.name + "ProdDeployTarget") ? getProperty(project.name + "ProdDeployTarget") : 'localhost'
+
 remotes {
-    staging {
-        role('staging')
-        host = 'mac-subs-004'
+    submission_dev {
+        role('dev')
+        host = devDeployHostName
+    }
+    submission_test {
+        role('test')
+        host = testDeployHostName
+    }
+    submission_prod {
+        role('prod')
+        host = prodDeployHostName
     }
 }
 
 task deployJar(type: SshTask, dependsOn: 'assemble') {
     doLast {
-        def deployHome = "/data/" + project.name;
-        File jarDeployDir = new File(deployHome,"jar")
-
-        ssh.run {
-            session(remotes.staging) {
-                println "Creating $project.name directory in /data"
-                execute "/data/create_dirs.sh $project.name", ignoreError: false
-                println "Uploading jar $jar.archivePath.name to $jarDeployDir area on $remote"
-                put(jar.archivePath.absolutePath, jarDeployDir.absolutePath)
-                println "creating symbolic link to $jar.archiveName"
-                def result = execute "ln -s -f $jarDeployDir/$jar.archiveName $jarDeployDir/$jar.baseName" + ".jar", ignoreError: true
-                println result
-                execute "chmod u+x $jarDeployDir/*", ignoreError: false
-            }
-        }
+        def uploadJarFileName = project.name + "-"  + project.version + "." + System.currentTimeMillis() + ".jar"
+        File jarDeployDir = new File("/data/$gradle_env/$project.name/jar",uploadJarFileName)
+        sshRun(jarDeployDir)
     }
     ssh.settings {
         knownHosts = allowAnyHosts
+    }
+}
+
+private Object sshRun(File jarDeployFile) {
+    def uploadJarFileName = name + "-"  + version + "." + System.currentTimeMillis() + ".jar"
+    File jarDeployDir = jarDeployFile.getParentFile()
+    ssh.run {
+        session(remotes.role(gradle_env)) {
+            execute "/homes/sub_adm/create_dirs.sh $gradle_env $project.name", ignoreError: false
+            println "Uploading jar $jar.archivePath.name to $jarDeployDir/$uploadJarFileName  area on $remote"
+            put(jar.archivePath.absolutePath, jarDeployFile.absolutePath)
+            println "creating symbolic link to $jar.archiveName"
+            def result = execute "ln -s -f $jarDeployFile.absolutePath $jarDeployDir/$jar.baseName" + ".jar", ignoreError: true
+            println result
+            println "updating permissions of $jarDeployDir/$jar.archiveName"
+            execute "chmod u+x $jarDeployDir/*", ignoreError: false
+        }
     }
 }
 

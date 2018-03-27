@@ -1,43 +1,67 @@
 package uk.ac.ebi.subs.biostudies.model;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 import uk.ac.ebi.subs.biostudies.TestUtil;
+import uk.ac.ebi.subs.biostudies.converters.UsiContactsToBsSubSections;
+import uk.ac.ebi.subs.biostudies.converters.UsiProjectToBsSection;
 import uk.ac.ebi.subs.biostudies.converters.UsiProjectToBsSubmission;
+import uk.ac.ebi.subs.biostudies.converters.UsiPublicationsToBsSubsections;
 import uk.ac.ebi.subs.data.submittable.Project;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+import static org.junit.Assert.assertEquals;
+
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = {
+        UsiProjectToBsSubmission.class,
+        UsiProjectToBsSection.class,
+        UsiPublicationsToBsSubsections.class,
+        UsiContactsToBsSubSections.class
+})
 public class ConvertUsiToBioStudies {
 
     private Project usiProject;
     private BioStudiesSubmission bioStudiesSubmission;
     private BioStudiesSubmission actual;
 
-    private UsiProjectToBsSubmission usiProjectToBsSubmission = new UsiProjectToBsSubmission();
+    @Autowired
+    private UsiProjectToBsSubmission usiProjectToBsSubmission;
+
+    @Before
+    public void buildUp() {
+        usiProject = (Project) TestUtil.loadObjectFromJson(
+                "exampleProject_usi.json",
+                Project.class
+        );
+        bioStudiesSubmission = (BioStudiesSubmission) TestUtil.loadObjectFromJson(
+                "exampleProject_biostudies.json",
+                BioStudiesSubmission.class
+        );
+        actual = usiProjectToBsSubmission.convert(usiProject);
+    }
 
     @Test
     public void testSubmissionTopLevel() {
-        Assert.assertEquals(bioStudiesSubmission.getAccno(), actual.getAccno());
-        Assert.assertEquals(bioStudiesSubmission.getAttributes(), actual.getAttributes());
-        Assert.assertEquals(bioStudiesSubmission.getType(), actual.getType());
+        assertEquals(bioStudiesSubmission.getAccno(), actual.getAccno());
+        assertEquals(bioStudiesSubmission.getAttributes(), actual.getAttributes());
+        assertEquals(bioStudiesSubmission.getType(), actual.getType());
     }
 
     @Test
     public void testSection() {
-        Assert.assertEquals(bioStudiesSubmission.getSection(), actual.getSection());
+        assertEquals(bioStudiesSubmission.getSection(), actual.getSection());
     }
 
     @Test
     public void testSubsections() {
-        Assert.assertEquals(bioStudiesSubmission.getSection().getSubsections(), actual.getSection().getSubsections());
+        assertEquals(bioStudiesSubmission.getSection().getSubsections(), actual.getSection().getSubsections());
     }
 
     @Test
@@ -61,12 +85,12 @@ public class ConvertUsiToBioStudies {
         List<BioStudiesSubsection> expectedSubsections = bioStudiesSubmission.getSection().getSubsections();
 
         for (int i = 0; i < actualSubsections.size(); i++) {
-            Assert.assertEquals(expectedSubsections.get(i), actualSubsections.get(i));
+            assertEquals(expectedSubsections.get(i), actualSubsections.get(i));
         }
     }
 
     private void testSpecifiedSubsections(String type) {
-        Assert.assertEquals(
+        assertEquals(
                 fetchSubsection(bioStudiesSubmission, type),
                 fetchSubsection(actual, type)
         );
@@ -78,21 +102,7 @@ public class ConvertUsiToBioStudies {
 
     @Test
     public void testEntirety() {
-        Assert.assertEquals(bioStudiesSubmission, actual);
+        assertEquals(bioStudiesSubmission, actual);
     }
-
-    @Before
-    public void buildUp() {
-        usiProject = (Project) TestUtil.loadObjectFromJson(
-                "exampleProject_usi.json",
-                Project.class
-        );
-        bioStudiesSubmission = (BioStudiesSubmission) TestUtil.loadObjectFromJson(
-                "exampleProject_biostudies.json",
-                BioStudiesSubmission.class
-        );
-        actual = usiProjectToBsSubmission.convert(usiProject);
-    }
-
 
 }

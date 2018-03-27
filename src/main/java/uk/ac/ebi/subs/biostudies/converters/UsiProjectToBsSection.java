@@ -1,14 +1,21 @@
 package uk.ac.ebi.subs.biostudies.converters;
 
+import lombok.Data;
+import lombok.NonNull;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
 import uk.ac.ebi.subs.biostudies.model.BioStudiesAttribute;
 import uk.ac.ebi.subs.biostudies.model.BioStudiesSection;
 import uk.ac.ebi.subs.data.submittable.Project;
 
+@Component
+@Data
 public class UsiProjectToBsSection implements Converter<Project, BioStudiesSection> {
 
-    private UsiPublicationsToBsSubsections usiPublicationsToBsSubsections = new UsiPublicationsToBsSubsections();
-    private UsiContactsToBsSubSections usiContactsToBsSubSections = new UsiContactsToBsSubSections();
+    @NonNull
+    private UsiPublicationsToBsSubsections usiPublicationsToBsSubsections;
+    @NonNull
+    private UsiContactsToBsSubSections usiContactsToBsSubSections;
 
     @Override
     public BioStudiesSection convert(Project source) {
@@ -16,10 +23,10 @@ public class UsiProjectToBsSection implements Converter<Project, BioStudiesSecti
         studiesSection.setType("Study");
 
         studiesSection.getAttributes().add(
-                BioStudiesAttribute.of("Description", source.getDescription())
+                BioStudiesAttribute.builder().name("Description").value(source.getDescription()).build()
         );
         studiesSection.getAttributes().add(
-                BioStudiesAttribute.of("alias", source.getAlias())
+                BioStudiesAttribute.builder().name("alias").value( source.getAlias()).build()
         );
 
         if (source.getContacts() != null) {

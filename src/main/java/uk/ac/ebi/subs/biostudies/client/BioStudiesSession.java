@@ -28,20 +28,36 @@ public class BioStudiesSession {
 
     private static final String SESSION_PARAM_NAME = "BIOSTDSESS";
 
-    public SubmissionReport submit(BioStudiesSubmission bioStudiesSubmission) {
+    private enum Commands{
+        create,
+        update
+    }
+
+    public SubmissionReport create(BioStudiesSubmission bioStudiesSubmission) {
+        return commandBioStudies(bioStudiesSubmission,Commands.create,false);
+    }
+
+    public SubmissionReport update(BioStudiesSubmission bioStudiesSubmission) {
+        return commandBioStudies(bioStudiesSubmission,Commands.update,false);
+    }
+
+    private SubmissionReport commandBioStudies(
+            BioStudiesSubmission bioStudiesSubmission,
+            Commands command,
+            boolean validateOnly
+    ){
         BioStudiesSubmissionWrapper wrapper = new BioStudiesSubmissionWrapper();
         wrapper.getSubmissions().add(bioStudiesSubmission);
-
 
         HttpEntity<SubmissionReport> response;
         try {
             response = restTemplate.postForEntity(
-                    this.createUri(false),
+                    this.commandUri(command,validateOnly),
                     wrapper,
                     SubmissionReport.class
             );
         } catch (HttpClientErrorException e) {
-            logger.error("Http error during submit");
+            logger.error("Http error during create");
             logger.error("Response code: {}",e.getRawStatusCode());
             logger.error("Response body: {}",e.getResponseBodyAsString());
             throw e;
@@ -50,7 +66,8 @@ public class BioStudiesSession {
         return response.getBody();
     }
 
-    private URI createUri(boolean validateOnly) {
+
+    private URI commandUri(Commands command, boolean validateOnly) {
         StringBuilder queryParams = new StringBuilder("?" + SESSION_PARAM_NAME + "=" + bioStudiesLoginResponse.getSessid());
 
         if (validateOnly) {
@@ -60,7 +77,8 @@ public class BioStudiesSession {
 
         return URI.create(
                 bioStudiesConfig.getServer()
-                        + "/submit/create"
+                        + "/submit/"
+                        + command.name()
                         + queryParams
 
         );
