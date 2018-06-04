@@ -29,29 +29,37 @@ public class BioStudiesClient {
 
         BioStudiesLoginResponse loginResponse ;
 
-        try {
-            loginResponse = restTemplate.postForObject(
-                    this.loginUri(),
-                    config.getAuth(),
-                    BioStudiesLoginResponse.class
-            );
-        }
-        catch (HttpClientErrorException e){
-            if (HttpStatus.FORBIDDEN.equals(e.getStatusCode())){
-                throw new IllegalArgumentException("login failed, check username and password");
+        if (config.getSessionId() == null || config.getSessionId().isEmpty()){
+            try {
+                loginResponse = restTemplate.postForObject(
+                        this.loginUri(),
+                        config.getAuth(),
+                        BioStudiesLoginResponse.class
+                );
             }
-            logger.error("Http error during login");
-            logger.error("Response code: {}",e.getRawStatusCode());
-            logger.error("Response body: {}",e.getResponseBodyAsString());
-            throw e;
+            catch (HttpClientErrorException e){
+                if (HttpStatus.FORBIDDEN.equals(e.getStatusCode())){
+                    throw new IllegalArgumentException("login failed, check username and password");
+                }
+                logger.error("Http error during login");
+                logger.error("Response code: {}",e.getRawStatusCode());
+                logger.error("Response body: {}",e.getResponseBodyAsString());
+                throw e;
+            }
+
+            if (!OK_STATUS.equals(loginResponse.getStatus())){
+                throw new IllegalStateException("login failed: "+loginResponse);
+            }
+            if (loginResponse.getSessid() == null){
+                throw new IllegalStateException("login did not produce session id: "+loginResponse);
+            }
+        }
+        else {
+            loginResponse = new BioStudiesLoginResponse();
+            loginResponse.setSessid(config.getSessionId());
         }
 
-        if (!OK_STATUS.equals(loginResponse.getStatus())){
-            throw new IllegalStateException("login failed: "+loginResponse);
-        }
-        if (loginResponse.getSessid() == null){
-            throw new IllegalStateException("login did not produce session id: "+loginResponse);
-        }
+
 
         return BioStudiesSession.of(loginResponse, config, restTemplate);
     }

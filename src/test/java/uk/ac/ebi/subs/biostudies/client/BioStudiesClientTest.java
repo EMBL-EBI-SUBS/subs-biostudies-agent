@@ -1,6 +1,7 @@
 package uk.ac.ebi.subs.biostudies.client;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -13,6 +14,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import uk.ac.ebi.subs.biostudies.BioStudiesApiDependentTest;
 import uk.ac.ebi.subs.biostudies.TestUtil;
 import uk.ac.ebi.subs.biostudies.model.BioStudiesSubmission;
+import uk.ac.ebi.subs.biostudies.model.DataOwner;
 
 import java.util.UUID;
 
@@ -33,11 +35,18 @@ public class BioStudiesClientTest {
 
     private BioStudiesSubmission bioStudiesSubmission;
 
+    private DataOwner dataOwner;
+
     @Before
     public void buildup() {
         bioStudiesSubmission = (BioStudiesSubmission) TestUtil.loadObjectFromJson(
                 "exampleProject_biostudies.json", BioStudiesSubmission.class
         );
+
+        dataOwner = DataOwner.builder()
+                .email("test@example.com")
+                .name("John Doe")
+                .build();
     }
 
     @Test
@@ -73,7 +82,7 @@ public class BioStudiesClientTest {
         BioStudiesClient client = new BioStudiesClient(config);
         BioStudiesSession session = client.initialiseSession();
 
-        SubmissionReport response = session.create(bioStudiesSubmission);
+        SubmissionReport response = session.store(dataOwner,bioStudiesSubmission);
 
         assertEquals("OK", response.getStatus());
         assertNotNull(response.findAccession());
@@ -90,7 +99,7 @@ public class BioStudiesClientTest {
 
         bioStudiesSubmission.setAccno("SUBSPRJ1");
 
-        SubmissionReport response = session.update(bioStudiesSubmission);
+        SubmissionReport response = session.store(dataOwner,bioStudiesSubmission);
 
         assertEquals("OK", response.getStatus());
         assertNotNull(response.findAccession());

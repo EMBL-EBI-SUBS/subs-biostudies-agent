@@ -13,6 +13,7 @@ import uk.ac.ebi.subs.biostudies.client.BioStudiesSession;
 import uk.ac.ebi.subs.biostudies.client.SubmissionReport;
 import uk.ac.ebi.subs.biostudies.converters.UsiProjectToBsSubmission;
 import uk.ac.ebi.subs.biostudies.model.BioStudiesSubmission;
+import uk.ac.ebi.subs.biostudies.model.DataOwner;
 import uk.ac.ebi.subs.data.component.Team;
 import uk.ac.ebi.subs.data.status.ProcessingStatusEnum;
 import uk.ac.ebi.subs.data.submittable.Project;
@@ -38,6 +39,7 @@ public class BioStudiesProcessorTest {
 
     private List<Project> projects;
     private Project project;
+    private DataOwner dataOwner;
 
     @InjectMocks
     @Spy
@@ -51,6 +53,11 @@ public class BioStudiesProcessorTest {
         project.setReleaseDate(LocalDate.MIN);
 
         projects = Arrays.asList(project);
+
+        dataOwner = DataOwner.builder()
+                .email("test@example.com")
+                .name("John Doe")
+                .build();
     }
 
     @Test
@@ -61,7 +68,7 @@ public class BioStudiesProcessorTest {
 
         when(usiProjectToBsSubmission.convert(project)).thenReturn(bioStudiesSubmission);
         when(bioStudiesClient.initialiseSession()).thenReturn(bioStudiesSession);
-        when(bioStudiesSession.create(bioStudiesSubmission)).thenReturn(submissionReport);
+        when(bioStudiesSession.store(dataOwner, bioStudiesSubmission)).thenReturn(submissionReport);
         when(submissionReport.findAccession()).thenReturn(accession);
 
 
@@ -74,7 +81,7 @@ public class BioStudiesProcessorTest {
                 )
         );
 
-        List<ProcessingCertificate> actualCerts = projectsProcessor.processProjects(projects);
+        List<ProcessingCertificate> actualCerts = projectsProcessor.processProjects(dataOwner,projects);
 
         Assert.assertEquals(expectedCerts, actualCerts);
     }
@@ -88,7 +95,7 @@ public class BioStudiesProcessorTest {
 
         when(usiProjectToBsSubmission.convert(project)).thenReturn(bioStudiesSubmission);
         when(bioStudiesClient.initialiseSession()).thenReturn(bioStudiesSession);
-        when(bioStudiesSession.update(bioStudiesSubmission)).thenReturn(submissionReport);
+        when(bioStudiesSession.store(dataOwner, bioStudiesSubmission)).thenReturn(submissionReport);
         when(submissionReport.findAccession()).thenReturn(accession);
 
 
@@ -101,7 +108,7 @@ public class BioStudiesProcessorTest {
                 )
         );
 
-        List<ProcessingCertificate> actualCerts = projectsProcessor.processProjects(projects);
+        List<ProcessingCertificate> actualCerts = projectsProcessor.processProjects(dataOwner, projects);
 
         Assert.assertEquals(expectedCerts, actualCerts);
     }

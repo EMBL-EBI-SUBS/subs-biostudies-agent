@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class BioStudiesConfig {
     private String server;
+    private String sessionId;
+
     private Auth auth = new Auth();
 
     @Data
