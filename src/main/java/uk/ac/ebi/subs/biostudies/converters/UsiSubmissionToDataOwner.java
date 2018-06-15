@@ -18,7 +18,7 @@ public class UsiSubmissionToDataOwner implements Converter<Submission, DataOwner
 
         DataOwner dataOwner = DataOwner.builder()
                 .email(submitter.getEmail())
-                .name("JohnDoe") //FIXME
+                .name(submitter.getName())
                 .teamName(source.getTeam().getName())
                 .build();
 
