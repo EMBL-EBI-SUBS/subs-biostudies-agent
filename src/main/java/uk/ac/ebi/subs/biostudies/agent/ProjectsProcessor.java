@@ -25,7 +25,7 @@ public class ProjectsProcessor {
     @NonNull private UsiProjectToBsSubmission converter;
 
     public List<ProcessingCertificate> processProjects(DataOwner dataOwner, List<Project> projects) {
-        BioStudiesSession bioStudiesSession = bioStudiesClient.initialiseSession();
+        BioStudiesSession bioStudiesSession = bioStudiesClient.getBioStudiesSession();
 
         return projects
                 .stream()

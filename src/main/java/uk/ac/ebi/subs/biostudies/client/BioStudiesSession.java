@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriUtils;
 import uk.ac.ebi.subs.biostudies.model.BioStudiesSubmission;
@@ -17,6 +18,10 @@ import uk.ac.ebi.subs.biostudies.model.DataOwner;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Data
 @RequiredArgsConstructor(staticName = "of")
@@ -46,8 +51,14 @@ public class BioStudiesSession {
                     wrapper,
                     SubmissionReport.class
             );
+        } catch (HttpServerErrorException e) {
+            logger.error("Http server error during createupdate");
+            logger.error("Response code: {}", e.getRawStatusCode());
+            logger.error("Response body: {}", e.getResponseBodyAsString());
+            throw e;
+
         } catch (HttpClientErrorException e) {
-            logger.error("Http error during createupdate");
+            logger.error("Http client error during createupdate");
             logger.error("Response code: {}", e.getRawStatusCode());
             logger.error("Response body: {}", e.getResponseBodyAsString());
             throw e;
@@ -67,16 +78,16 @@ public class BioStudiesSession {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        logger.debug("submission response:");
-        logger.debug(submissionReport);
+        logger.trace("submission response:");
+        logger.trace(submissionReport);
     }
 
     private void logSubmission(BioStudiesSubmissionWrapper wrapper) {
         ObjectMapper om = new ObjectMapper();
         try {
             String jsonSubmission = om.writeValueAsString(wrapper);
-            logger.debug("Submission as json:");
-            logger.debug(jsonSubmission);
+            logger.trace("Submission as json:");
+            logger.trace(jsonSubmission);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
@@ -84,30 +95,37 @@ public class BioStudiesSession {
 
 
     private URI commandUri(DataOwner dataOwner, boolean validateOnly) {
-        StringBuilder queryParams = new StringBuilder("?" + SESSION_PARAM_NAME + "=" + bioStudiesLoginResponse.getSessid());
+        Map<String, String> parameters = new LinkedHashMap<>();
 
-        queryParams.append("&sse=true"); //TODO find out what this does
+        parameters.put(SESSION_PARAM_NAME, bioStudiesLoginResponse.getSessid());
+        parameters.put("sse", "true"); //enables super user actions
 
         if (validateOnly) {
-            queryParams.append("&validateOnly=true");
+            parameters.put("validateOnly", "true");
         }
-        try {
-            if (dataOwner.getEmail() != null) {
-                queryParams.append("&onBehalf=");
-                queryParams.append(UriUtils.encodeQueryParam(dataOwner.getEmail(), "UTF-8"));
-            }
-            if (dataOwner.getName() != null) {
-                queryParams.append("&name=");
-                queryParams.append(UriUtils.encodeQueryParam(dataOwner.getName(), "UTF-8"));
-            }
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
+
+        parameters.put("onBehalf", dataOwner.getEmail());
+        parameters.put("name", dataOwner.getName());
+        parameters.put("domain", dataOwner.getTeamName());
+
+
+        List<String> params = parameters.entrySet().stream()
+                .map(entry -> {
+                    try {
+                        return entry.getKey() + "=" + UriUtils.encodeQueryParam(entry.getValue(), "UTF-8");
+                    } catch (UnsupportedEncodingException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .collect(Collectors.toList());
+
+
+        String queryString = "?" + String.join("&", params);
 
         return URI.create(
                 bioStudiesConfig.getServer()
                         + "/submit/createupdate"
-                        + queryParams
+                        + queryString
 
         );
 

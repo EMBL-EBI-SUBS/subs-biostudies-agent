@@ -25,6 +25,7 @@ import static org.junit.Assert.assertTrue;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {
         BioStudiesConfig.class,
+        BioStudiesClient.class,
         BioStudiesClientTestContextConfiguration.class
 })
 @Category(BioStudiesApiDependentTest.class)
@@ -33,26 +34,10 @@ public class BioStudiesClientTest {
     @Autowired
     private BioStudiesConfig config;
 
-    private BioStudiesSubmission bioStudiesSubmission;
-
-    private DataOwner dataOwner;
-
-    @Before
-    public void buildup() {
-        bioStudiesSubmission = (BioStudiesSubmission) TestUtil.loadObjectFromJson(
-                "exampleProject_biostudies.json", BioStudiesSubmission.class
-        );
-
-        dataOwner = DataOwner.builder()
-                .email("test@example.com")
-                .name("John Doe")
-                .build();
-    }
-
     @Test
     public void login() {
         BioStudiesClient client = new BioStudiesClient(config);
-        BioStudiesSession session = client.initialiseSession();
+        BioStudiesSession session = client.getBioStudiesSession();
 
         assertEquals("OK", session.getBioStudiesLoginResponse().getStatus());
         assertNotNull(session.getBioStudiesLoginResponse().getSessid());
@@ -74,38 +59,9 @@ public class BioStudiesClientTest {
         badConfig.getAuth().setPassword(UUID.randomUUID().toString());
 
         BioStudiesClient client = new BioStudiesClient(badConfig);
-        client.initialiseSession();
+        client.getBioStudiesSession();
     }
 
-    @Test
-    public void createGood() throws JsonProcessingException {
-        BioStudiesClient client = new BioStudiesClient(config);
-        BioStudiesSession session = client.initialiseSession();
 
-        SubmissionReport response = session.store(dataOwner,bioStudiesSubmission);
-
-        assertEquals("OK", response.getStatus());
-        assertNotNull(response.findAccession());
-        assertTrue(response.findAccession().startsWith("SUBSPRJ"));
-
-        System.out.println(response.findAccession());
-
-    }
-
-    @Test
-    public void updateGood() {
-        BioStudiesClient client = new BioStudiesClient(config);
-        BioStudiesSession session = client.initialiseSession();
-
-        bioStudiesSubmission.setAccno("SUBSPRJ1");
-
-        SubmissionReport response = session.store(dataOwner,bioStudiesSubmission);
-
-        assertEquals("OK", response.getStatus());
-        assertNotNull(response.findAccession());
-        assertEquals("SUBSPRJ1",response.findAccession());
-
-        System.out.println(response.findAccession());
-    }
 
 }

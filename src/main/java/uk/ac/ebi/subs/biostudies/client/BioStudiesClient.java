@@ -1,8 +1,13 @@
 package uk.ac.ebi.subs.biostudies.client;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.Synchronized;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -11,53 +16,84 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
+import java.util.Date;
 
 @Component
 @RequiredArgsConstructor
-@Data
+
 public class BioStudiesClient {
 
     private static final Logger logger = LoggerFactory.getLogger(BioStudiesClient.class);
 
     @NonNull
     private final BioStudiesConfig config;
-    private RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate = new RestTemplate();
 
     private static final String OK_STATUS = "OK";
 
-    public BioStudiesSession initialiseSession() {
+    private BioStudiesSession cachedSession;
+    private Long sessionExpiryTime;
+
+    private static final long FIVE_MINUTES_IN_MILLIS = 300000;
+
+    public BioStudiesSession getBioStudiesSession(){
+        long currentTime = System.currentTimeMillis();
+        boolean sessionExpired = (sessionExpiryTime != null &&  currentTime >= sessionExpiryTime);
+
+        if (cachedSession == null || sessionExpired){
+            cacheSession();
+        }
+
+        return this.cachedSession;
+    }
+
+    @Synchronized
+    private void cacheSession() {
+        BioStudiesSession session = initialiseSession();
+        Long expiryTime = null;
+
+        String token = session.getBioStudiesLoginResponse().getSessid();
+
+        DecodedJWT jwt = JWT.decode(token);
+        if (jwt.getExpiresAt() != null ){
+            Date expiryDate = jwt.getExpiresAt();
+            expiryTime = expiryDate.getTime() - FIVE_MINUTES_IN_MILLIS;
+        }
+
+        this.cachedSession = session;
+        this.sessionExpiryTime = expiryTime;
+    }
+
+
+    private BioStudiesSession initialiseSession() {
 
         BioStudiesLoginResponse loginResponse ;
 
-        if (config.getSessionId() == null || config.getSessionId().isEmpty()){
-            try {
-                loginResponse = restTemplate.postForObject(
-                        this.loginUri(),
-                        config.getAuth(),
-                        BioStudiesLoginResponse.class
-                );
-            }
-            catch (HttpClientErrorException e){
-                if (HttpStatus.FORBIDDEN.equals(e.getStatusCode())){
-                    throw new IllegalArgumentException("login failed, check username and password");
-                }
-                logger.error("Http error during login");
-                logger.error("Response code: {}",e.getRawStatusCode());
-                logger.error("Response body: {}",e.getResponseBodyAsString());
-                throw e;
-            }
 
-            if (!OK_STATUS.equals(loginResponse.getStatus())){
-                throw new IllegalStateException("login failed: "+loginResponse);
-            }
-            if (loginResponse.getSessid() == null){
-                throw new IllegalStateException("login did not produce session id: "+loginResponse);
-            }
+        try {
+            loginResponse = restTemplate.postForObject(
+                    this.loginUri(),
+                    config.getAuth(),
+                    BioStudiesLoginResponse.class
+            );
         }
-        else {
-            loginResponse = new BioStudiesLoginResponse();
-            loginResponse.setSessid(config.getSessionId());
+        catch (HttpClientErrorException e){
+            if (HttpStatus.FORBIDDEN.equals(e.getStatusCode())){
+                throw new IllegalArgumentException("login failed, check username and password");
+            }
+            logger.error("Http error during login");
+            logger.error("Response code: {}",e.getRawStatusCode());
+            logger.error("Response body: {}",e.getResponseBodyAsString());
+            throw e;
         }
+
+        if (!OK_STATUS.equals(loginResponse.getStatus())){
+            throw new IllegalStateException("login failed: "+loginResponse);
+        }
+        if (loginResponse.getSessid() == null){
+            throw new IllegalStateException("login did not produce session id: "+loginResponse);
+        }
+
 
 
 

@@ -67,7 +67,7 @@ public class BioStudiesProcessorTest {
         BioStudiesSubmission bioStudiesSubmission = new BioStudiesSubmission();
 
         when(usiProjectToBsSubmission.convert(project)).thenReturn(bioStudiesSubmission);
-        when(bioStudiesClient.initialiseSession()).thenReturn(bioStudiesSession);
+        when(bioStudiesClient.getBioStudiesSession()).thenReturn(bioStudiesSession);
         when(bioStudiesSession.store(dataOwner, bioStudiesSubmission)).thenReturn(submissionReport);
         when(submissionReport.findAccession()).thenReturn(accession);
 
@@ -94,7 +94,7 @@ public class BioStudiesProcessorTest {
         BioStudiesSubmission bioStudiesSubmission = new BioStudiesSubmission();
 
         when(usiProjectToBsSubmission.convert(project)).thenReturn(bioStudiesSubmission);
-        when(bioStudiesClient.initialiseSession()).thenReturn(bioStudiesSession);
+        when(bioStudiesClient.getBioStudiesSession()).thenReturn(bioStudiesSession);
         when(bioStudiesSession.store(dataOwner, bioStudiesSubmission)).thenReturn(submissionReport);
         when(submissionReport.findAccession()).thenReturn(accession);
 
