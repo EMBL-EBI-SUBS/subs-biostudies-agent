@@ -11,4 +11,5 @@ public class BioStudiesLoginResponse {
     private String status;
     private String sessid;
     private String username;
+
 }

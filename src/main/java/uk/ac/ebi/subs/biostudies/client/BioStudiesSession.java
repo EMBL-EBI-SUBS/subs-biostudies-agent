@@ -1,5 +1,7 @@
 package uk.ac.ebi.subs.biostudies.client;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -7,11 +9,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriUtils;
 import uk.ac.ebi.subs.biostudies.model.BioStudiesSubmission;
 import uk.ac.ebi.subs.biostudies.model.BioStudiesSubmissionWrapper;
+import uk.ac.ebi.subs.biostudies.model.DataOwner;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Data
 @RequiredArgsConstructor(staticName = "of")
@@ -28,58 +38,94 @@ public class BioStudiesSession {
 
     private static final String SESSION_PARAM_NAME = "BIOSTDSESS";
 
-    private enum Commands{
-        create,
-        update
-    }
-
-    public SubmissionReport create(BioStudiesSubmission bioStudiesSubmission) {
-        return commandBioStudies(bioStudiesSubmission,Commands.create,false);
-    }
-
-    public SubmissionReport update(BioStudiesSubmission bioStudiesSubmission) {
-        return commandBioStudies(bioStudiesSubmission,Commands.update,false);
-    }
-
-    private SubmissionReport commandBioStudies(
-            BioStudiesSubmission bioStudiesSubmission,
-            Commands command,
-            boolean validateOnly
-    ){
+    public SubmissionReport store(DataOwner dataOwner, BioStudiesSubmission bioStudiesSubmission) {
         BioStudiesSubmissionWrapper wrapper = new BioStudiesSubmissionWrapper();
         wrapper.getSubmissions().add(bioStudiesSubmission);
+
+        logSubmission(wrapper);
 
         HttpEntity<SubmissionReport> response;
         try {
             response = restTemplate.postForEntity(
-                    this.commandUri(command,validateOnly),
+                    this.commandUri(dataOwner, false),
                     wrapper,
                     SubmissionReport.class
             );
+        } catch (HttpServerErrorException e) {
+            logger.error("Http server error during createupdate");
+            logger.error("Response code: {}", e.getRawStatusCode());
+            logger.error("Response body: {}", e.getResponseBodyAsString());
+            throw e;
+
         } catch (HttpClientErrorException e) {
-            logger.error("Http error during create");
-            logger.error("Response code: {}",e.getRawStatusCode());
-            logger.error("Response body: {}",e.getResponseBodyAsString());
+            logger.error("Http client error during createupdate");
+            logger.error("Response code: {}", e.getRawStatusCode());
+            logger.error("Response body: {}", e.getResponseBodyAsString());
             throw e;
         }
+
+        logSubmissionResponse(response);
+
 
         return response.getBody();
     }
 
+    private void logSubmissionResponse(HttpEntity<SubmissionReport> response) {
+        ObjectMapper om = new ObjectMapper();
+        String submissionReport = null;
+        try {
+            submissionReport = om.writeValueAsString(response.getBody());
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        logger.trace("submission response:");
+        logger.trace(submissionReport);
+    }
 
-    private URI commandUri(Commands command, boolean validateOnly) {
-        StringBuilder queryParams = new StringBuilder("?" + SESSION_PARAM_NAME + "=" + bioStudiesLoginResponse.getSessid());
+    private void logSubmission(BioStudiesSubmissionWrapper wrapper) {
+        ObjectMapper om = new ObjectMapper();
+        try {
+            String jsonSubmission = om.writeValueAsString(wrapper);
+            logger.trace("Submission as json:");
+            logger.trace(jsonSubmission);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private URI commandUri(DataOwner dataOwner, boolean validateOnly) {
+        Map<String, String> parameters = new LinkedHashMap<>();
+
+        parameters.put(SESSION_PARAM_NAME, bioStudiesLoginResponse.getSessid());
+        parameters.put("sse", "true"); //enables super user actions
 
         if (validateOnly) {
-            queryParams.append("&validateOnly=true");
+            parameters.put("validateOnly", "true");
         }
 
+        parameters.put("onBehalf", dataOwner.getEmail());
+        parameters.put("name", dataOwner.getName());
+        parameters.put("domain", dataOwner.getTeamName());
+
+
+        List<String> params = parameters.entrySet().stream()
+                .map(entry -> {
+                    try {
+                        return entry.getKey() + "=" + UriUtils.encodeQueryParam(entry.getValue(), "UTF-8");
+                    } catch (UnsupportedEncodingException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .collect(Collectors.toList());
+
+
+        String queryString = "?" + String.join("&", params);
 
         return URI.create(
                 bioStudiesConfig.getServer()
-                        + "/submit/"
-                        + command.name()
-                        + queryParams
+                        + "/submit/createupdate"
+                        + queryString
 
         );
 
