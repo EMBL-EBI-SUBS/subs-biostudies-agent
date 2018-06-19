@@ -1,10 +1,14 @@
 package uk.ac.ebi.subs.biostudies.agent;
 
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitMessagingTemplate;
 import org.springframework.stereotype.Service;
+import uk.ac.ebi.subs.biostudies.converters.UsiSubmissionToDataOwner;
+import uk.ac.ebi.subs.biostudies.model.DataOwner;
 import uk.ac.ebi.subs.data.Submission;
 import uk.ac.ebi.subs.data.submittable.Project;
 import uk.ac.ebi.subs.messaging.Exchanges;
@@ -17,16 +21,17 @@ import uk.ac.ebi.subs.processing.SubmissionEnvelope;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class AgentListener {
     private static final Logger logger = LoggerFactory.getLogger(AgentListener.class);
 
+    @NonNull
     private RabbitMessagingTemplate rabbitMessagingTemplate;
+    @NonNull
     private ProjectsProcessor projectsProcessor;
+    @NonNull
+    private UsiSubmissionToDataOwner usiSubmissionToDataOwner;
 
-    public AgentListener(RabbitMessagingTemplate rabbitMessagingTemplate, ProjectsProcessor projectsProcessor) {
-        this.rabbitMessagingTemplate = rabbitMessagingTemplate;
-        this.projectsProcessor = projectsProcessor;
-    }
 
     @RabbitListener(queues = Queues.BIOSTUDIES_AGENT)
     public void handleProjectSubmission(SubmissionEnvelope submissionEnvelope) {
@@ -34,10 +39,10 @@ public class AgentListener {
 
         logger.info("Received submission {}", submission.getId());
 
+        DataOwner dataOwner = usiSubmissionToDataOwner.convert(submission);
+        List < Project > projects = submissionEnvelope.getProjects();
 
-        List<Project> projects = submissionEnvelope.getProjects();
-
-        List<ProcessingCertificate> certificatesCompleted = projectsProcessor.processProjects(projects);
+        List<ProcessingCertificate> certificatesCompleted = projectsProcessor.processProjects(dataOwner,projects);
 
         ProcessingCertificateEnvelope certificateEnvelopeCompleted = new ProcessingCertificateEnvelope(
                 submission.getId(),
