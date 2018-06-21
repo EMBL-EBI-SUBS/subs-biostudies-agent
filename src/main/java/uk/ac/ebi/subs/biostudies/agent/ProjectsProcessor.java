@@ -45,13 +45,28 @@ public class ProjectsProcessor {
 
         SubmissionReport report = bioStudiesSession.store(dataOwner,bioStudiesSubmission);
 
-        //TODO what if there is an error?
+        String status = report.getStatus();
+        String accession = report.findAccession();
+
+        ProcessingStatusEnum outcome = ProcessingStatusEnum.Completed;
+        String message = null;
+
+        if (!status.equals("OK")){
+            outcome = ProcessingStatusEnum.Error;
+            message = String.join("; ",report.findMessages("ERROR"));
+        }
+
         ProcessingCertificate cert = new ProcessingCertificate(
                 project,
                 Archive.BioStudies,
-                ProcessingStatusEnum.Completed,
-                report.findAccession()
+                outcome
         );
+        if (accession != null){
+            cert.setAccession(accession);
+        }
+        if (message != null){
+            cert.setMessage(message);
+        }
 
 
         return cert;

@@ -3,8 +3,10 @@ package uk.ac.ebi.subs.biostudies.client;
 import lombok.Data;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Data
@@ -63,7 +65,12 @@ public class SubmissionReport {
         return findAccesionUsingPrefix(SUBMISSION_ACCESSION_PROVIDED_MESSAGE_PREFIX);
     }
 
-
+    public Collection<String> findMessages(String level){
+        return log.nodeStream()
+                .filter(node -> level.equals(node.getLevel()))
+                .map(node -> node.getMessage())
+                .collect(Collectors.toList());
+    }
 
     @Data
     public static class LogNode {
