@@ -70,7 +70,7 @@ public class BioStudiesProcessorTest {
         when(bioStudiesClient.getBioStudiesSession()).thenReturn(bioStudiesSession);
         when(bioStudiesSession.store(dataOwner, bioStudiesSubmission)).thenReturn(submissionReport);
         when(submissionReport.findAccession()).thenReturn(accession);
-
+        when(submissionReport.getStatus()).thenReturn("OK");
 
         List<ProcessingCertificate> expectedCerts = Arrays.asList(
                 new ProcessingCertificate(
@@ -97,7 +97,7 @@ public class BioStudiesProcessorTest {
         when(bioStudiesClient.getBioStudiesSession()).thenReturn(bioStudiesSession);
         when(bioStudiesSession.store(dataOwner, bioStudiesSubmission)).thenReturn(submissionReport);
         when(submissionReport.findAccession()).thenReturn(accession);
-
+        when(submissionReport.getStatus()).thenReturn("OK");
 
         List<ProcessingCertificate> expectedCerts = Arrays.asList(
                 new ProcessingCertificate(
