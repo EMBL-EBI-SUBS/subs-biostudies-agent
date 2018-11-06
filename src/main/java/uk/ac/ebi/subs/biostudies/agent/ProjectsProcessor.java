@@ -17,6 +17,9 @@ import uk.ac.ebi.subs.processing.ProcessingCertificate;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * This service sends a list of projects (related to the submitted submission) to the BioStudies archive.
+ */
 @Service
 @RequiredArgsConstructor
 public class ProjectsProcessor {
@@ -29,7 +32,7 @@ public class ProjectsProcessor {
 
         return projects
                 .stream()
-                .map(project -> processProject(dataOwner, project,bioStudiesSession))
+                .map(project -> processProject(dataOwner, project, bioStudiesSession))
                 .collect(Collectors.toList());
     }
 
@@ -43,7 +46,7 @@ public class ProjectsProcessor {
             bioStudiesSubmission.setAccno(project.getAccession());
         }
 
-        SubmissionReport report = bioStudiesSession.store(dataOwner,bioStudiesSubmission);
+        SubmissionReport report = bioStudiesSession.store(dataOwner, bioStudiesSubmission);
 
         String status = report.getStatus();
         String accession = report.findAccession();

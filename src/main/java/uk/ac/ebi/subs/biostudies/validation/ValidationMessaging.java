@@ -11,7 +11,7 @@ import uk.ac.ebi.subs.messaging.ExchangeConfig;
 import uk.ac.ebi.subs.messaging.Queues;
 
 /**
- * RabbitMQ related messaging configuration for the Biostudies queue(s) and binding(s).
+ * RabbitMQ related messaging configuration for the BioStudies queue(s) and binding(s).
  */
 @Configuration
 @ComponentScan(basePackageClasses = ExchangeConfig.class)

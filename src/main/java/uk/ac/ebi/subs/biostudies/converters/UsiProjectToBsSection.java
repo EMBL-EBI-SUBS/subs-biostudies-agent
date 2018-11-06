@@ -8,6 +8,10 @@ import uk.ac.ebi.subs.biostudies.model.BioStudiesAttribute;
 import uk.ac.ebi.subs.biostudies.model.BioStudiesSection;
 import uk.ac.ebi.subs.data.submittable.Project;
 
+/**
+ * This component responsible for converting USI {@link Project} entity
+ * to BioStudies {@link BioStudiesSection} entity.
+ */
 @Component
 @Data
 public class UsiProjectToBsSection implements Converter<Project, BioStudiesSection> {
@@ -43,5 +47,4 @@ public class UsiProjectToBsSection implements Converter<Project, BioStudiesSecti
 
         return studiesSection;
     }
-
 }
