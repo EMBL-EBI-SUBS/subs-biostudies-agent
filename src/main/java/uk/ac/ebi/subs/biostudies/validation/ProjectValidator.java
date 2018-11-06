@@ -14,6 +14,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * This component validates the {@link Project} entity sent to the BioStudies validator.
+ * It validates the project's title, description and release date.
+ */
 @Component
 public class ProjectValidator {
 

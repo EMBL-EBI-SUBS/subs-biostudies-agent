@@ -1,10 +1,7 @@
 package uk.ac.ebi.subs.biostudies.client;
 
 import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import lombok.Data;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Synchronized;
@@ -18,6 +15,9 @@ import org.springframework.web.client.RestTemplate;
 import java.net.URI;
 import java.util.Date;
 
+/**
+ * This class represent a client for the BioSamples REST interface.
+ */
 @Component
 @RequiredArgsConstructor
 
@@ -64,11 +64,8 @@ public class BioStudiesClient {
         this.sessionExpiryTime = expiryTime;
     }
 
-
     private BioStudiesSession initialiseSession() {
-
         BioStudiesLoginResponse loginResponse ;
-
 
         try {
             loginResponse = restTemplate.postForObject(
@@ -94,15 +91,10 @@ public class BioStudiesClient {
             throw new IllegalStateException("login did not produce session id: "+loginResponse);
         }
 
-
-
-
         return BioStudiesSession.of(loginResponse, config, restTemplate);
     }
 
     private URI loginUri() {
         return URI.create(config.getServer() + "/auth/signin");
     }
-
-
 }

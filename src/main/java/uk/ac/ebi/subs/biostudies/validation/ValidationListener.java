@@ -18,6 +18,11 @@ import static uk.ac.ebi.subs.biostudies.validation.ValidationMessaging.BIOSTUDIE
 import static uk.ac.ebi.subs.biostudies.validation.ValidationMessaging.EVENT_VALIDATION_ERROR;
 import static uk.ac.ebi.subs.biostudies.validation.ValidationMessaging.EVENT_VALIDATION_SUCCESS;
 
+/**
+ * This listener listens on the {@code BIOSTUDIES_PROJECT_VALIDATION} queue,
+ * execute the validation for the published project entity
+ * and send the validation results to the validation service.
+ */
 @Service
 @Data
 public class ValidationListener {
