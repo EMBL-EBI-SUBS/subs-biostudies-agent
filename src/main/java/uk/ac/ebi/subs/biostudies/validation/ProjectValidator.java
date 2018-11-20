@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @Component
 public class ProjectValidator {
 
-    public final int MINIMUM_TITLE_CHAR_LENGTH = 50;
+    public final int MINIMUM_TITLE_CHAR_LENGTH = 25;
     public final int MAXIMUM_TITLE_CHAR_LENGTH = 4000;
     public final int MINIMUM_DESCRIPTION_CHAR_LENGTH = 50;
     public final int MAXIMUM_DESCRIPTION_CHAR_LENGTH = 4000;
