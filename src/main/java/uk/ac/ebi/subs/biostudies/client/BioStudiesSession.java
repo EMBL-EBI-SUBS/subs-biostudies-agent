@@ -23,6 +23,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * This class responsible to send new BioStudies submissions to BioStudies server.
+ */
 @Data
 @RequiredArgsConstructor(staticName = "of")
 public class BioStudiesSession {
@@ -66,7 +69,6 @@ public class BioStudiesSession {
 
         logSubmissionResponse(response);
 
-
         return response.getBody();
     }
 
@@ -93,7 +95,6 @@ public class BioStudiesSession {
         }
     }
 
-
     private URI commandUri(DataOwner dataOwner, boolean validateOnly) {
         Map<String, String> parameters = new LinkedHashMap<>();
 
@@ -108,7 +109,6 @@ public class BioStudiesSession {
         parameters.put("name", dataOwner.getName());
         parameters.put("domain", dataOwner.getTeamName());
 
-
         List<String> params = parameters.entrySet().stream()
                 .map(entry -> {
                     try {
@@ -119,16 +119,12 @@ public class BioStudiesSession {
                 })
                 .collect(Collectors.toList());
 
-
         String queryString = "?" + String.join("&", params);
 
         return URI.create(
                 bioStudiesConfig.getServer()
                         + "/submit/createupdate"
                         + queryString
-
         );
-
     }
-
 }

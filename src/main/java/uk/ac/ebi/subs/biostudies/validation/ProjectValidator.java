@@ -14,10 +14,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * This component validates the {@link Project} entity sent to the BioStudies validator.
+ * It validates the project's title, description and release date.
+ */
 @Component
 public class ProjectValidator {
 
-    public final int MINIMUM_TITLE_CHAR_LENGTH = 50;
+    public final int MINIMUM_TITLE_CHAR_LENGTH = 25;
     public final int MAXIMUM_TITLE_CHAR_LENGTH = 4000;
     public final int MINIMUM_DESCRIPTION_CHAR_LENGTH = 50;
     public final int MAXIMUM_DESCRIPTION_CHAR_LENGTH = 4000;

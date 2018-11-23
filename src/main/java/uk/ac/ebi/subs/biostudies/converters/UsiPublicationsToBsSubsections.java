@@ -11,19 +11,18 @@ import uk.ac.ebi.subs.data.component.Publications;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * This component responsible for converting USI {@link Publications} entity
+ * to a list of BioStudies {@link BioStudiesSubsection} entities.
+ */
 @Component
 @Data
 public class UsiPublicationsToBsSubsections implements Converter<Publications, List<BioStudiesSubsection>> {
     @Override
     public List<BioStudiesSubsection> convert(Publications source) {
-
-
         List<BioStudiesSubsection> subsections = source.getPublications().stream()
-                .map(
-                        publication -> publicationToSubsection(publication)
-                )
+                .map(publication -> publicationToSubsection(publication))
                 .collect(Collectors.toList());
-
 
         return subsections;
     }
@@ -59,8 +58,7 @@ public class UsiPublicationsToBsSubsections implements Converter<Publications, L
         if (pubmedId.startsWith(pubmedPrefix)) {
             return pubmedId.replace(pubmedPrefix, "");
         }
+
         return null;
-
-
     }
 }

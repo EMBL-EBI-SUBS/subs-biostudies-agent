@@ -11,6 +11,10 @@ import uk.ac.ebi.subs.data.component.Contacts;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * This component responsible for converting USI {@link Contact}s entiti(es)
+ * to BioStudies {@link BioStudiesSubsection} entiti(es).
+ */
 @Component
 @Data
 public class UsiContactsToBsSubSections implements Converter<Contacts, List<BioStudiesSubsection>> {
@@ -45,7 +49,6 @@ public class UsiContactsToBsSubSections implements Converter<Contacts, List<BioS
 
         return subsection;
     }
-
 
     private BioStudiesSubsection contactToSubsection(Contact contact, Map<String, String> affiliationRefNames) {
         BioStudiesSubsection subsection = new BioStudiesSubsection();
@@ -82,7 +85,6 @@ public class UsiContactsToBsSubSections implements Converter<Contacts, List<BioS
             subsection.getAttributes().add(BioStudiesAttribute.builder().name("Organisation").value(affiliationRef).isReference(true).build());
         }
 
-
         return subsection;
     }
 
@@ -103,8 +105,8 @@ public class UsiContactsToBsSubSections implements Converter<Contacts, List<BioS
         if (name.isEmpty()) {
             return null;
         }
-        return name;
 
+        return name;
     }
 
     private Map<String, String> affiliationRefs(List<Contact> contacts) {
@@ -127,5 +129,4 @@ public class UsiContactsToBsSubSections implements Converter<Contacts, List<BioS
 
         return Collections.unmodifiableMap(affiliationRefs);
     }
-
 }

@@ -20,6 +20,10 @@ import uk.ac.ebi.subs.processing.SubmissionEnvelope;
 
 import java.util.List;
 
+/**
+ * This service is responsible for sending the submission's project(s) to BioStudies archive
+ * and gets the list of processing certificates from the archive.
+ */
 @Service
 @RequiredArgsConstructor
 public class AgentListener {
@@ -32,7 +36,6 @@ public class AgentListener {
     @NonNull
     private UsiSubmissionToDataOwner usiSubmissionToDataOwner;
 
-
     @RabbitListener(queues = Queues.BIOSTUDIES_AGENT)
     public void handleProjectSubmission(SubmissionEnvelope submissionEnvelope) {
         Submission submission = submissionEnvelope.getSubmission();
@@ -40,9 +43,9 @@ public class AgentListener {
         logger.info("Received submission {}", submission.getId());
 
         DataOwner dataOwner = usiSubmissionToDataOwner.convert(submission);
-        List < Project > projects = submissionEnvelope.getProjects();
+        List <Project> projects = submissionEnvelope.getProjects();
 
-        List<ProcessingCertificate> certificatesCompleted = projectsProcessor.processProjects(dataOwner,projects);
+        List<ProcessingCertificate> certificatesCompleted = projectsProcessor.processProjects(dataOwner, projects);
 
         ProcessingCertificateEnvelope certificateEnvelopeCompleted = new ProcessingCertificateEnvelope(
                 submission.getId(),
@@ -55,5 +58,4 @@ public class AgentListener {
 
         rabbitMessagingTemplate.convertAndSend(Exchanges.SUBMISSIONS, Topics.EVENT_SUBMISSION_AGENT_RESULTS, certificateEnvelopeCompleted);
     }
-
 }

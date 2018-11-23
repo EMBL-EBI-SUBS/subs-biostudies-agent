@@ -9,6 +9,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * This class is processing the response of the BioStudies server, when the user sends the list of projects to store.
+ * It will parse the response to get the accession ID from BioStudies.
+ */
 @Data
 public class SubmissionReport {
     private LogNode log;
@@ -36,9 +40,7 @@ public class SubmissionReport {
         return accession;
     }
 
-
-
-    private String findAccesionUsingPrefix(String messagePrefix){
+    private String findAccessionUsingPrefix(String messagePrefix){
         Optional<String> optionalString = log.nodeStream()
                 .filter(node -> "INFO".equals(node.getLevel()))
                 .map(node -> node.getMessage())
@@ -58,11 +60,11 @@ public class SubmissionReport {
     }
 
     private String findGeneratedAccession() {
-        return findAccesionUsingPrefix(SUBMISSION_ACCESSIONED_MESSAGE_PREFIX);
+        return findAccessionUsingPrefix(SUBMISSION_ACCESSIONED_MESSAGE_PREFIX);
     }
 
     private String findProvidedAccession(){
-        return findAccesionUsingPrefix(SUBMISSION_ACCESSION_PROVIDED_MESSAGE_PREFIX);
+        return findAccessionUsingPrefix(SUBMISSION_ACCESSION_PROVIDED_MESSAGE_PREFIX);
     }
 
     public Collection<String> findMessages(String level){
@@ -88,8 +90,5 @@ public class SubmissionReport {
                     this.subnodes.stream().flatMap(LogNode::nodeStream)
             );
         }
-
     }
-
-
 }

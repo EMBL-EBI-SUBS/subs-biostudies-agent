@@ -5,6 +5,9 @@ import lombok.Data;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A model to represent a sub section related to BioStudies submission.
+ */
 @Data
 public class BioStudiesSubsection implements BioStudiesAccessioned {
     private String type;
