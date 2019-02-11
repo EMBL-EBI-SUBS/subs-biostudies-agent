@@ -12,7 +12,7 @@ buildscript {
 }
 
 group 'uk.ac.ebi.subs'
-version '1.0.2-SNAPSHOT'
+version '1.0.3-SNAPSHOT'
 
 apply plugin: 'idea'
 apply plugin: 'java'
@@ -38,7 +38,9 @@ dependencies {
     compile ("uk.ac.ebi.subs:validator-common:2.10.1-SNAPSHOT"){
         exclude group: 'org.springframework.boot', module :'spring-boot-starter-data-mongodb'
     }
+
     compile ("com.auth0:java-jwt:3.3.0")
+    compile("de.siegmar:logback-gelf:1.1.0")
 
     compileOnly('org.projectlombok:lombok:1.16.18')
     optional("org.springframework.boot:spring-boot-configuration-processor")
