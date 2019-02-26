@@ -8,7 +8,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.web.client.RestTemplate;
 import uk.ac.ebi.subs.biostudies.BioStudiesApiDependentTest;
 import uk.ac.ebi.subs.biostudies.TestUtil;
 import uk.ac.ebi.subs.biostudies.model.BioStudiesSubmission;
@@ -27,7 +26,6 @@ import static org.junit.Assert.assertTrue;
 @Category(BioStudiesApiDependentTest.class)
 public class BioStudiesSessionTest {
 
-
     @Autowired
     private BioStudiesClient client;
 
@@ -36,6 +34,9 @@ public class BioStudiesSessionTest {
     private BioStudiesSubmission bioStudiesSubmission;
 
     private DataOwner dataOwner;
+
+    @Autowired
+    private BioStudiesConfig bioStudiesConfig;
 
     @Before
     public void buildup() {
@@ -58,7 +59,7 @@ public class BioStudiesSessionTest {
 
         assertEquals("OK", response.getStatus());
         assertNotNull(response.findAccession());
-        assertTrue(response.findAccession().startsWith("SUBSPRJ"));
+        assertTrue(response.findAccession().startsWith(bioStudiesConfig.getAccessionPrefix()));
 
         System.out.println(response.findAccession());
     }
