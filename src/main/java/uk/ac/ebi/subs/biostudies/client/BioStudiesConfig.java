@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 public class BioStudiesConfig {
     private String server;
 
+    private String accessionPrefix;
+
     private Auth auth = new Auth();
 
     /**

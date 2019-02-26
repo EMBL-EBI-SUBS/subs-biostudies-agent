@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.NonNull;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
+import uk.ac.ebi.subs.biostudies.client.BioStudiesConfig;
 import uk.ac.ebi.subs.biostudies.model.BioStudiesAttribute;
 import uk.ac.ebi.subs.biostudies.model.BioStudiesSubmission;
 import uk.ac.ebi.subs.biostudies.model.BioStudiesSubsection;
@@ -17,12 +18,14 @@ import uk.ac.ebi.subs.data.submittable.Project;
 @Data
 public class UsiProjectToBsSubmission implements Converter<Project,BioStudiesSubmission> {
 
-    private static final String PROJECT_ACCESSION_PREFIX = "SUBSPRJ";
     private static final String SECTION_INTERNAL_ACCESSION = "PROJECT";
     private static final String SUBSECTION_INTERNAL_ACCESSION_PREFIX = "SECT";
 
     @NonNull
     private UsiProjectToBsSection usiProjectToBsSection;
+
+    @NonNull
+    private final BioStudiesConfig bioStudiesConfig;
 
     @Override
     public BioStudiesSubmission convert(Project source) {
@@ -43,7 +46,7 @@ public class UsiProjectToBsSubmission implements Converter<Project,BioStudiesSub
 
         int sectCounter = 0;
 
-        submission.setAccno("!{"+ PROJECT_ACCESSION_PREFIX +"}");
+        submission.setAccno("!{"+ bioStudiesConfig.getAccessionPrefix() +"}");
         submission.getSection().setAccno(SECTION_INTERNAL_ACCESSION);
         for (BioStudiesSubsection subsection : submission.getSection().getSubsections()) {
             if (!subsection.isAccessioned()) {
