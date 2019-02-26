@@ -1,5 +1,5 @@
 {
-  "accno": "!{SUBSPRJ}",
+  "accno": "!{S-SUBS}",
   "attributes": [
     {
       "name": "Title",
