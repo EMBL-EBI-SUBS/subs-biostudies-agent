@@ -20,6 +20,8 @@ public class UsiProjectToBsSection implements Converter<Project, BioStudiesSecti
     private UsiPublicationsToBsSubsections usiPublicationsToBsSubsections;
     @NonNull
     private UsiContactsToBsSubSections usiContactsToBsSubSections;
+    @NonNull
+    private UsiFundingsToBsSubSections usiFundingsToBsSubSections;
 
     @Override
     public BioStudiesSection convert(Project source) {
@@ -42,6 +44,12 @@ public class UsiProjectToBsSection implements Converter<Project, BioStudiesSecti
         if (source.getPublications() != null) {
             studiesSection.getSubsections().addAll(
                     usiPublicationsToBsSubsections.convert(source)
+            );
+        }
+
+        if (source.getFundings() != null) {
+            studiesSection.getSubsections().addAll(
+                    usiFundingsToBsSubSections.convert(source)
             );
         }
 
