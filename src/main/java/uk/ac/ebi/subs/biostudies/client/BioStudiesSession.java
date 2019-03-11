@@ -80,16 +80,16 @@ public class BioStudiesSession {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        logger.trace("submission response:");
-        logger.trace(submissionReport);
+        logger.info("submission response:");
+        logger.info(submissionReport);
     }
 
     private void logSubmission(BioStudiesSubmissionWrapper wrapper) {
         ObjectMapper om = new ObjectMapper();
         try {
             String jsonSubmission = om.writeValueAsString(wrapper);
-            logger.trace("Submission as json:");
-            logger.trace(jsonSubmission);
+            logger.info("Submission as json:");
+            logger.info(jsonSubmission);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
