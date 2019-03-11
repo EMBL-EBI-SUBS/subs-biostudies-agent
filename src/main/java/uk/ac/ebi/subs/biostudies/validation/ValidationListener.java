@@ -38,7 +38,7 @@ public class ValidationListener {
 
     @RabbitListener(queues = BIOSTUDIES_PROJECT_VALIDATION)
     public void handleValidationRequest(ProjectValidationMessageEnvelope envelope) {
-        logger.info("Received validation request on sample with id {}", envelope.getEntityToValidate().getId());
+        logger.info("Received validation request on project with id {}", envelope.getEntityToValidate().getId());
 
         SingleValidationResultsEnvelope singleValidationResultsEnvelope = validator.validateProject(envelope);
 
