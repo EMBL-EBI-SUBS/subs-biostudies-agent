@@ -134,6 +134,60 @@
           }
         ],
         "type": "Publication"
+      },
+      {
+        "accno": "SECT3",
+        "attributes": [
+          {
+            "name": "grant_id",
+            "value": "BB/P0000001/1"
+          },
+          {
+            "name": "grant_title",
+            "value": "Test Research Grant"
+          },
+          {
+            "name": "Agency",
+            "value": "Biotechnology and Biological Sciences Research Council (BBSRC); California Institute of Regenerative Medicine (CIRM)"
+          }
+        ],
+        "type": "Funding"
+      },
+      {
+        "accno": "SECT4",
+        "attributes": [
+          {
+            "name": "grant_id",
+            "value": "AB/C0000001/2"
+          },
+          {
+            "name": "grant_title",
+            "value": "Test Research Grant only for Daniel"
+          },
+          {
+            "name": "Agency",
+            "value": "Uncle Daniel's Organization"
+          }
+        ],
+        "type": "Funding"
+      },
+      {
+        "accno": "SECT5",
+        "attributes": [
+          {
+            "name": "grant_id",
+            "value": "IS/C0000001/2"
+          },
+          {
+            "name": "grant_title",
+            "value": "Test Research Grant for Master Isuru"
+          },
+          {
+            "name": "Agency",
+            "value": "The Great Isuru Company"
+          }
+        ],
+        "type": "Funding"
       }
     ],
     "attributes": [

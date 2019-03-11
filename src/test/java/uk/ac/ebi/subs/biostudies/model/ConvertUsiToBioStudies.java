@@ -10,6 +10,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import uk.ac.ebi.subs.biostudies.TestUtil;
 import uk.ac.ebi.subs.biostudies.client.BioStudiesConfig;
 import uk.ac.ebi.subs.biostudies.converters.UsiContactsToBsSubSections;
+import uk.ac.ebi.subs.biostudies.converters.UsiFundingsToBsSubSections;
 import uk.ac.ebi.subs.biostudies.converters.UsiProjectToBsSection;
 import uk.ac.ebi.subs.biostudies.converters.UsiProjectToBsSubmission;
 import uk.ac.ebi.subs.biostudies.converters.UsiPublicationsToBsSubsections;
@@ -26,7 +27,8 @@ import static org.junit.Assert.assertEquals;
         UsiProjectToBsSubmission.class,
         UsiProjectToBsSection.class,
         UsiPublicationsToBsSubsections.class,
-        UsiContactsToBsSubSections.class
+        UsiContactsToBsSubSections.class,
+        UsiFundingsToBsSubSections.class
 })
 @EnableAutoConfiguration
 public class ConvertUsiToBioStudies {

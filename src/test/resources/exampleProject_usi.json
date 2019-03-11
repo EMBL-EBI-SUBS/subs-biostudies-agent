@@ -42,5 +42,22 @@
         "investigator"
       ]
     }
+  ],
+  "fundings": [
+    {
+      "grantId": "BB/P0000001/1",
+      "organization": "Biotechnology and Biological Sciences Research Council (BBSRC); California Institute of Regenerative Medicine (CIRM)",
+      "grantTitle": "Test Research Grant"
+    },
+    {
+      "grantId": "AB/C0000001/2",
+      "organization": "Uncle Daniel's Organization",
+      "grantTitle": "Test Research Grant only for Daniel"
+    },
+    {
+      "grantId": "IS/C0000001/2",
+      "organization": "The Great Isuru Company",
+      "grantTitle": "Test Research Grant for Master Isuru"
+    }
   ]
 }
