@@ -36,6 +36,8 @@ dependencies {
     compile("uk.ac.ebi.subs:subs-processing-model:2.7.0-SNAPSHOT")
     compile("uk.ac.ebi.subs:subs-messaging:0.4.0-SNAPSHOT")
     compile ("uk.ac.ebi.subs:validator-common:3.8.0-SNAPSHOT")
+        exclude group: 'org.springframework.boot', module :'spring-boot-starter-data-mongodb'
+    }
 
     compile ("com.auth0:java-jwt:3.3.0")
     compile("de.siegmar:logback-gelf:1.1.0")
