@@ -8,7 +8,13 @@ import uk.ac.ebi.subs.biostudies.client.BioStudiesConfig;
 import uk.ac.ebi.subs.biostudies.model.BioStudiesAttribute;
 import uk.ac.ebi.subs.biostudies.model.BioStudiesSubmission;
 import uk.ac.ebi.subs.biostudies.model.BioStudiesSubsection;
+import uk.ac.ebi.subs.data.component.Attribute;
 import uk.ac.ebi.subs.data.submittable.Project;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This component responsible for converting USI {@link Project} entity
@@ -30,6 +36,8 @@ public class UsiProjectToBsSubmission implements Converter<Project,BioStudiesSub
     @Override
     public BioStudiesSubmission convert(Project source) {
         BioStudiesSubmission submission = new BioStudiesSubmission();
+
+        submission.getAttributes().addAll(convertAttributes(source));
 
         submission.getAttributes().add(
                 BioStudiesAttribute.builder().name("Title").value( source.getTitle()).build()
@@ -56,5 +64,21 @@ public class UsiProjectToBsSubmission implements Converter<Project,BioStudiesSub
         }
 
         return submission;
+    }
+
+    private List<BioStudiesAttribute> convertAttributes(Project project) {
+        List<BioStudiesAttribute> bioStudiesAttributes = new ArrayList<>();
+
+
+        for (Map.Entry<String, Collection<Attribute>> attributes : project.getAttributes().entrySet()) {
+            for (Attribute attribute : attributes.getValue()) {
+                bioStudiesAttributes.add(
+                        BioStudiesAttribute.builder().name(attributes.getKey()).value(attribute.getValue()).build()
+                );
+            }
+
+        }
+
+        return bioStudiesAttributes;
     }
 }

@@ -2,6 +2,14 @@
   "accno": "!{S-SUBS}",
   "attributes": [
     {
+      "name": "Project Core - Project Short Name",
+      "value": "HPSI human cerebral organoids"
+    },
+    {
+      "name": "HCA Project UUID",
+      "value": "d96c2451-6e22-441f-a3e6-70fd0878bb1b"
+    },
+    {
       "name": "Title",
       "value": "SUPER project"
     },
