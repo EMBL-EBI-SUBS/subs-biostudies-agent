@@ -11,6 +11,8 @@ import uk.ac.ebi.subs.data.component.Contacts;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static uk.ac.ebi.subs.biostudies.converters.ConverterUtils.addBioStudiesAttributeIfNotNull;
+
 /**
  * This component responsible for converting USI {@link Contact}s entiti(es)
  * to BioStudies {@link BioStudiesSubsection} entiti(es).
@@ -54,31 +56,15 @@ public class UsiContactsToBsSubSections implements Converter<Contacts, List<BioS
         BioStudiesSubsection subsection = new BioStudiesSubsection();
         subsection.setType("Author");
 
-        if (contactName(contact) != null) {
-            subsection.getAttributes().add(BioStudiesAttribute.builder().name("Name").value(contactName(contact)).build());
-        }
+        addBioStudiesAttributeIfNotNull(subsection.getAttributes(), "Name", contactName(contact));
+        addBioStudiesAttributeIfNotNull(subsection.getAttributes(), "firstName", contact.getFirstName());
+        addBioStudiesAttributeIfNotNull(subsection.getAttributes(), "middleInitials", contact.getMiddleInitials());
+        addBioStudiesAttributeIfNotNull(subsection.getAttributes(), "lastName", contact.getLastName());
+        addBioStudiesAttributeIfNotNull(subsection.getAttributes(), "E-mail", contact.getEmail());
+        addBioStudiesAttributeIfNotNull(subsection.getAttributes(), "address", contact.getAddress());
+        addBioStudiesAttributeIfNotNull(subsection.getAttributes(), "phone", contact.getPhone());
+        addBioStudiesAttributeIfNotNull(subsection.getAttributes(), "role", String.join(", ", contact.getRoles()));
 
-        if (contact.getFirstName() != null) {
-            subsection.getAttributes().add(BioStudiesAttribute.builder().name("firstName").value(contact.getFirstName()).build());
-        }
-        if (contact.getMiddleInitials() != null) {
-            subsection.getAttributes().add(BioStudiesAttribute.builder().name("middleInitials").value(contact.getMiddleInitials()).build());
-        }
-        if (contact.getLastName() != null) {
-            subsection.getAttributes().add(BioStudiesAttribute.builder().name("lastName").value(contact.getLastName()).build());
-        }
-        if (contact.getEmail() != null) {
-            subsection.getAttributes().add(BioStudiesAttribute.builder().name("E-mail").value(contact.getEmail()).build());
-        }
-        if (contact.getAddress() != null) {
-            subsection.getAttributes().add(BioStudiesAttribute.builder().name("address").value(contact.getAddress()).build());
-        }
-        if (contact.getPhone() != null) {
-            subsection.getAttributes().add(BioStudiesAttribute.builder().name("phone").value(contact.getPhone()).build());
-        }
-        if (contact.getRoles() != null && !contact.getRoles().isEmpty()) {
-            subsection.getAttributes().add(BioStudiesAttribute.builder().name("role").value(String.join(", ", contact.getRoles())).build());
-        }
         if (contact.getAffiliation() != null && affiliationRefNames.containsKey(contact.getAffiliation())) {
             String affiliationRef = affiliationRefNames.get(contact.getAffiliation());
 

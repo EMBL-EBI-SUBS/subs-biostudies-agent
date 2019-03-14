@@ -8,6 +8,8 @@ import uk.ac.ebi.subs.biostudies.model.BioStudiesAttribute;
 import uk.ac.ebi.subs.biostudies.model.BioStudiesSection;
 import uk.ac.ebi.subs.data.submittable.Project;
 
+import static uk.ac.ebi.subs.biostudies.converters.ConverterUtils.addBioStudiesAttributeIfNotNull;
+
 /**
  * This component responsible for converting USI {@link Project} entity
  * to BioStudies {@link BioStudiesSection} entity.
@@ -28,12 +30,8 @@ public class UsiProjectToBsSection implements Converter<Project, BioStudiesSecti
         BioStudiesSection studiesSection = new BioStudiesSection();
         studiesSection.setType("Study");
 
-        studiesSection.getAttributes().add(
-                BioStudiesAttribute.builder().name("Description").value(source.getDescription()).build()
-        );
-        studiesSection.getAttributes().add(
-                BioStudiesAttribute.builder().name("alias").value( source.getAlias()).build()
-        );
+        addBioStudiesAttributeIfNotNull(studiesSection.getAttributes(), "Description", source.getDescription());
+        addBioStudiesAttributeIfNotNull(studiesSection.getAttributes(), "alias", source.getAlias());
 
         if (source.getContacts() != null) {
             studiesSection.getSubsections().addAll(
