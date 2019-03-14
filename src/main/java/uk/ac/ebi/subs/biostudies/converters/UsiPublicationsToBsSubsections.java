@@ -12,6 +12,8 @@ import uk.ac.ebi.subs.data.component.Publications;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static uk.ac.ebi.subs.biostudies.converters.ConverterUtils.addBioStudiesAttributeIfNotNull;
+
 /**
  * This component responsible for converting USI {@link Publications} entity
  * to a list of BioStudies {@link BioStudiesSubsection} entities.
@@ -33,62 +35,22 @@ public class UsiPublicationsToBsSubsections implements Converter<Publications, L
 
         subsection.setType("Publication");
 
-        String accno = null;
+        addBioStudiesAttributeIfNotNull(subsection.getAttributes(), "doi", publication.getDoi());
+        String accno = publication.getDoi();
 
-        if (publication.getDoi() != null) {
-            subsection.getAttributes().add(
-                    BioStudiesAttribute.builder().name("doi").value(publication.getDoi()).build()
-            );
-            accno = publication.getDoi();
-        }
-
+        addBioStudiesAttributeIfNotNull(subsection.getAttributes(), "pubmedId", publication.getPubmedId());
         if (publication.getPubmedId() != null) {
-            subsection.getAttributes().add(
-                    BioStudiesAttribute.builder().name("pubmedId").value(publication.getPubmedId()).build()
-            );
             accno = pubmedIdNumericPart(publication.getPubmedId());
         }
 
-        if (publication.getArticleTitle() != null){
-            subsection.getAttributes().add(
-                    BioStudiesAttribute.builder().name("articleTitle").value(publication.getArticleTitle()).build()
-            );
-        }
-        if (publication.getJournalTitle() != null){
-            subsection.getAttributes().add(
-                    BioStudiesAttribute.builder().name("journalTitle").value(publication.getJournalTitle()).build()
-            );
-        }
-        if (publication.getAuthors() != null){
-            subsection.getAttributes().add(
-                    BioStudiesAttribute.builder().name("authors").value(publication.getAuthors()).build()
-            );
-        }
-        if (publication.getJournalIssn() != null){
-            subsection.getAttributes().add(
-                    BioStudiesAttribute.builder().name("journalIssn").value(publication.getJournalIssn()).build()
-            );
-        }
-        if (publication.getIssue() != null){
-            subsection.getAttributes().add(
-                    BioStudiesAttribute.builder().name("issue").value(publication.getIssue()).build()
-            );
-        }
-        if (publication.getYear() != null){
-            subsection.getAttributes().add(
-                    BioStudiesAttribute.builder().name("year").value(publication.getYear()).build()
-            );
-        }
-        if (publication.getVolume() != null){
-            subsection.getAttributes().add(
-                    BioStudiesAttribute.builder().name("volume").value(publication.getVolume()).build()
-            );
-        }
-        if (publication.getPageInfo() != null){
-            subsection.getAttributes().add(
-                    BioStudiesAttribute.builder().name("pageInfo").value(publication.getPageInfo()).build()
-            );
-        }
+        addBioStudiesAttributeIfNotNull(subsection.getAttributes(), "articleTitle", publication.getArticleTitle());
+        addBioStudiesAttributeIfNotNull(subsection.getAttributes(), "journalTitle", publication.getJournalTitle());
+        addBioStudiesAttributeIfNotNull(subsection.getAttributes(), "authors", publication.getAuthors());
+        addBioStudiesAttributeIfNotNull(subsection.getAttributes(), "journalIssn", publication.getJournalIssn());
+        addBioStudiesAttributeIfNotNull(subsection.getAttributes(), "issue", publication.getIssue());
+        addBioStudiesAttributeIfNotNull(subsection.getAttributes(), "year", publication.getYear());
+        addBioStudiesAttributeIfNotNull(subsection.getAttributes(), "volume", publication.getVolume());
+        addBioStudiesAttributeIfNotNull(subsection.getAttributes(), "pageInfo", publication.getPageInfo());
 
         subsection.setAccno(accno);
 

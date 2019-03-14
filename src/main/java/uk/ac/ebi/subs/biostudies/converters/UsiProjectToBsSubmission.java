@@ -16,6 +16,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import static uk.ac.ebi.subs.biostudies.converters.ConverterUtils.addBioStudiesAttributeIfNotNull;
+
 /**
  * This component responsible for converting USI {@link Project} entity
  * to BioStudies {@link BioStudiesSubmission} entity.
@@ -39,15 +41,10 @@ public class UsiProjectToBsSubmission implements Converter<Project,BioStudiesSub
 
         submission.getAttributes().addAll(convertAttributes(source));
 
-        submission.getAttributes().add(
-                BioStudiesAttribute.builder().name("Title").value( source.getTitle()).build()
-        );
-        submission.getAttributes().add(
-                BioStudiesAttribute.builder().name("ReleaseDate").value( source.getReleaseDate().toString()).build()
-        );
-        submission.getAttributes().add(
-                BioStudiesAttribute.builder().name("DataSource").value( "USI").build()
-        );
+        addBioStudiesAttributeIfNotNull(submission.getAttributes(), "Title", source.getTitle());
+        addBioStudiesAttributeIfNotNull(submission.getAttributes(), "ReleaseDate", source.getReleaseDate().toString());
+        addBioStudiesAttributeIfNotNull(submission.getAttributes(), "DataSource", "USI");
+
         submission.setType("submission");
 
         submission.setSection(usiProjectToBsSection.convert(source));
