@@ -10,6 +10,8 @@ import uk.ac.ebi.subs.data.component.Fundings;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static uk.ac.ebi.subs.biostudies.converters.ConverterUtils.addBioStudiesAttributeIfNotNull;
+
 @Component
 public class UsiFundingsToBsSubSections implements Converter<Fundings, List<BioStudiesSubsection>> {
 
@@ -24,32 +26,9 @@ public class UsiFundingsToBsSubSections implements Converter<Fundings, List<BioS
         BioStudiesSubsection subsection = new BioStudiesSubsection();
         subsection.setType("Funding");
 
-        if (funding.getGrantId() != null) {
-            subsection.getAttributes().add(
-                    BioStudiesAttribute.builder()
-                            .name("grant_id")
-                            .value(funding.getGrantId())
-                            .build()
-            );
-        }
-
-        if (funding.getGrantTitle() != null) {
-            subsection.getAttributes().add(
-                    BioStudiesAttribute.builder()
-                            .name("grant_title")
-                            .value(funding.getGrantTitle())
-                            .build()
-            );
-        }
-
-        if (funding.getOrganization() != null) {
-            subsection.getAttributes().add(
-                    BioStudiesAttribute.builder()
-                            .name("Agency")
-                            .value(funding.getOrganization())
-                            .build()
-            );
-        }
+        addBioStudiesAttributeIfNotNull(subsection.getAttributes(), "grant_id", funding.getGrantId());
+        addBioStudiesAttributeIfNotNull(subsection.getAttributes(), "grant_title", funding.getGrantTitle());
+        addBioStudiesAttributeIfNotNull(subsection.getAttributes(), "Agency", funding.getOrganization());
 
         return subsection;
     }

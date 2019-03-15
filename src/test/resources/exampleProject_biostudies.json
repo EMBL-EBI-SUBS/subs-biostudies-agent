@@ -202,10 +202,6 @@
       {
         "name": "Description",
         "value": "The aim of the SUPER project is to identify all functional elements in the metahuman genome sequence through the generation of a diverse collection of high-throughput datasets and mapping these datasets onto the metahuman genome sequence. The SUPER Project involves close interactions between computational and experimental scientists to analyze the data and to evaluate different methods for annotating functional elements of the metahuman genome."
-      },
-      {
-        "name": "alias",
-        "value": "super-production-project"
       }
     ],
     "type": "Study"
