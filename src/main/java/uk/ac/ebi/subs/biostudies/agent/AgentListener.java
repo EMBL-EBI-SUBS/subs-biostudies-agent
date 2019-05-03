@@ -49,7 +49,8 @@ public class AgentListener {
 
         ProcessingCertificateEnvelope certificateEnvelopeCompleted = new ProcessingCertificateEnvelope(
                 submission.getId(),
-                certificatesCompleted
+                certificatesCompleted,
+                submissionEnvelope.getJWTToken()
         );
         logger.info("Processed submission {} producing {} certificates",
                 submission.getId(),
