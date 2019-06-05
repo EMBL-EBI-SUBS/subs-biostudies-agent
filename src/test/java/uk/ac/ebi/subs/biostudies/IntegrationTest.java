@@ -16,8 +16,6 @@ import uk.ac.ebi.subs.data.submittable.Project;
 import uk.ac.ebi.subs.processing.ProcessingCertificate;
 
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.List;
 
 @RunWith(SpringRunner.class)
 @Category(BioStudiesApiDependentTest.class)
@@ -27,7 +25,6 @@ public class IntegrationTest {
     @Autowired
     ProjectsProcessor projectsProcessor;
 
-    private List<Project> projects;
     private Project project;
     private DataOwner dataOwner;
 
@@ -45,20 +42,15 @@ public class IntegrationTest {
         project.setDescription("a short description");
         project.setTeam(Team.build(dataOwner.getTeamName()));
         project.setReleaseDate(LocalDate.MIN);
-
-        projects = Arrays.asList(project);
-
-
     }
 
     @Test
     public void expect_failure(){
-        List<ProcessingCertificate> certs = projectsProcessor.processProjects(dataOwner,projects);
+        ProcessingCertificate cert = projectsProcessor.processProjects(dataOwner,project);
 
-        Assert.assertEquals(1,certs.size());
-        Assert.assertNotNull(certs.get(0));
-        Assert.assertNotNull(certs.get(0).getMessage());
-        Assert.assertEquals(certs.get(0).getProcessingStatus(),ProcessingStatusEnum.Error);
+        Assert.assertNotNull(cert);
+        Assert.assertNotNull(cert.getMessage());
+        Assert.assertEquals(cert.getProcessingStatus(),ProcessingStatusEnum.Error);
     }
 
 
