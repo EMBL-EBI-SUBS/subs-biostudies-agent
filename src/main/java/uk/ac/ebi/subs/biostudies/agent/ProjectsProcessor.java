@@ -14,9 +14,6 @@ import uk.ac.ebi.subs.data.status.ProcessingStatusEnum;
 import uk.ac.ebi.subs.data.submittable.Project;
 import uk.ac.ebi.subs.processing.ProcessingCertificate;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 /**
  * This service sends a list of projects (related to the submitted submission) to the BioStudies archive.
  */
@@ -27,13 +24,10 @@ public class ProjectsProcessor {
     @NonNull private final BioStudiesClient bioStudiesClient;
     @NonNull private UsiProjectToBsSubmission converter;
 
-    public List<ProcessingCertificate> processProjects(DataOwner dataOwner, List<Project> projects) {
+    public ProcessingCertificate processProjects(DataOwner dataOwner, Project project) {
         BioStudiesSession bioStudiesSession = bioStudiesClient.getBioStudiesSession();
 
-        return projects
-                .stream()
-                .map(project -> processProject(dataOwner, project, bioStudiesSession))
-                .collect(Collectors.toList());
+        return processProject(dataOwner, project, bioStudiesSession);
     }
 
     private ProcessingCertificate processProject(DataOwner dataOwner, Project project, BioStudiesSession bioStudiesSession) {

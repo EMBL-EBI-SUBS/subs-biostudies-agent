@@ -18,6 +18,7 @@ import uk.ac.ebi.subs.processing.ProcessingCertificate;
 import uk.ac.ebi.subs.processing.ProcessingCertificateEnvelope;
 import uk.ac.ebi.subs.processing.SubmissionEnvelope;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -40,12 +41,14 @@ public class AgentListener {
     public void handleProjectSubmission(SubmissionEnvelope submissionEnvelope) {
         Submission submission = submissionEnvelope.getSubmission();
 
+
         logger.info("Received submission {}", submission.getId());
 
         DataOwner dataOwner = usiSubmissionToDataOwner.convert(submission);
-        List <Project> projects = submissionEnvelope.getProjects();
+        Project project = submissionEnvelope.getProject();
 
-        List<ProcessingCertificate> certificatesCompleted = projectsProcessor.processProjects(dataOwner, projects);
+        List<ProcessingCertificate> certificatesCompleted =
+                Collections.singletonList(projectsProcessor.processProjects(dataOwner, project));
 
         ProcessingCertificateEnvelope certificateEnvelopeCompleted = new ProcessingCertificateEnvelope(
                 submission.getId(),

@@ -20,8 +20,6 @@ import uk.ac.ebi.subs.data.submittable.Project;
 import uk.ac.ebi.subs.processing.ProcessingCertificate;
 
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.List;
 
 import static org.mockito.Mockito.when;
 
@@ -37,7 +35,6 @@ public class BioStudiesProcessorTest {
     @Mock
     private SubmissionReport submissionReport;
 
-    private List<Project> projects;
     private Project project;
     private DataOwner dataOwner;
 
@@ -51,8 +48,6 @@ public class BioStudiesProcessorTest {
         project.setAlias("pr1");
         project.setTeam(Team.build("team"));
         project.setReleaseDate(LocalDate.MIN);
-
-        projects = Arrays.asList(project);
 
         dataOwner = DataOwner.builder()
                 .email("test@example.com")
@@ -72,18 +67,16 @@ public class BioStudiesProcessorTest {
         when(submissionReport.findAccession()).thenReturn(accession);
         when(submissionReport.getStatus()).thenReturn("OK");
 
-        List<ProcessingCertificate> expectedCerts = Arrays.asList(
-                new ProcessingCertificate(
-                        project,
-                        uk.ac.ebi.subs.data.component.Archive.BioStudies,
-                        ProcessingStatusEnum.Completed,
-                        accession
-                )
+        ProcessingCertificate expectedCert = new ProcessingCertificate(
+            project,
+            uk.ac.ebi.subs.data.component.Archive.BioStudies,
+            ProcessingStatusEnum.Completed,
+            accession
         );
 
-        List<ProcessingCertificate> actualCerts = projectsProcessor.processProjects(dataOwner,projects);
+        ProcessingCertificate actualCert = projectsProcessor.processProjects(dataOwner,project);
 
-        Assert.assertEquals(expectedCerts, actualCerts);
+        Assert.assertEquals(expectedCert, actualCert);
     }
 
     @Test
@@ -99,18 +92,16 @@ public class BioStudiesProcessorTest {
         when(submissionReport.findAccession()).thenReturn(accession);
         when(submissionReport.getStatus()).thenReturn("OK");
 
-        List<ProcessingCertificate> expectedCerts = Arrays.asList(
-                new ProcessingCertificate(
-                        project,
-                        uk.ac.ebi.subs.data.component.Archive.BioStudies,
-                        ProcessingStatusEnum.Completed,
-                        accession
-                )
+        ProcessingCertificate expectedCert = new ProcessingCertificate(
+            project,
+            uk.ac.ebi.subs.data.component.Archive.BioStudies,
+            ProcessingStatusEnum.Completed,
+            accession
         );
 
-        List<ProcessingCertificate> actualCerts = projectsProcessor.processProjects(dataOwner, projects);
+        ProcessingCertificate actualCert = projectsProcessor.processProjects(dataOwner, project);
 
-        Assert.assertEquals(expectedCerts, actualCerts);
+        Assert.assertEquals(expectedCert, actualCert);
     }
 
 }
