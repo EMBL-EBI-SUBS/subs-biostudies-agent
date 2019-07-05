@@ -8,8 +8,6 @@ import org.springframework.boot.system.ApplicationPidFileWriter;
 public class BioStudiesAgentApp {
     public static void main(String[] args) {
         SpringApplication springApplication = new SpringApplication( BioStudiesAgentApp.class);
-        ApplicationPidFileWriter applicationPidFileWriter = new ApplicationPidFileWriter();
-        springApplication.addListeners( applicationPidFileWriter );
         springApplication.run(args);
     }
 }

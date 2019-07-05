@@ -1,0 +1,35 @@
+image: gradle:5.4.1-jdk8
+
+stages:
+  - build-test
+  - deploy-dev-agent
+  - deploy-beta-agent
+  - deploy-prod-agent
+
+build-test:
+  stage: build-test
+  script: gradle clean test build
+  artifacts:
+    paths:
+      - build/libs/subs-biostudies-agent.jar
+
+deploy-dev-agent:
+  stage: deploy-dev-agent
+  when: manual
+  dependencies:
+    - build-test
+  script: gradle deployAgent -Penv=dev -PdeployPath=/nfs/biostudies/.adm/apps/usi-agent/dev
+
+deploy-beta-agent:
+  stage: deploy-dev-agent
+  when: manual
+  dependencies:
+    - build-test
+  script: gradle deployAgent -Penv=beta -PdeployPath=/nfs/biostudies/.adm/apps/usi-agent/beta
+
+deploy-prod-agent:
+  stage: deploy-dev-agent
+  when: manual
+  dependencies:
+    - build-test
+  script: gradle deployAgent -Penv=prod -PdeployPath=/nfs/biostudies/.adm/apps/usi-agent/prod
