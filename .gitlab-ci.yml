@@ -21,14 +21,14 @@ deploy-dev-agent:
   script: gradle deployAgent -Penv=dev -PdeployPath=/nfs/biostudies/.adm/apps/usi-agent/dev
 
 deploy-beta-agent:
-  stage: deploy-dev-agent
+  stage: deploy-beta-agent
   when: manual
   dependencies:
     - build-test
   script: gradle deployAgent -Penv=beta -PdeployPath=/nfs/biostudies/.adm/apps/usi-agent/beta
 
 deploy-prod-agent:
-  stage: deploy-dev-agent
+  stage: deploy-prod-agent
   when: manual
   dependencies:
     - build-test
