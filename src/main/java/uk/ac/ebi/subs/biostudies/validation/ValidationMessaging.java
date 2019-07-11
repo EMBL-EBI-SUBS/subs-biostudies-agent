@@ -43,8 +43,11 @@ public class ValidationMessaging {
      * using the routing key of created samples related to BioSamples.
      */
     @Bean
-    public Binding validationForCreatedBiosamplesSampleBinding(Queue biotudiesProjectValidationQueue, TopicExchange submissionExchange) {
-        return BindingBuilder.bind(biotudiesProjectValidationQueue).to(submissionExchange)
+    public Binding validationForCreatedBiosamplesSampleBinding(Queue biotudiesProjectValidationQueue,
+            TopicExchange submissionExchange) {
+        return BindingBuilder
+                .bind(biotudiesProjectValidationQueue)
+                .to(submissionExchange)
                 .with(EVENT_BIOSTUDIES_PROJECT_VALIDATION);
     }
 

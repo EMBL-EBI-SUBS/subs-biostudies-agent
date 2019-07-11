@@ -13,4 +13,5 @@ public class BioStudiesSubsection implements BioStudiesAccessioned {
     private String type;
     private String accno;
     private List<BioStudiesAttribute> attributes = new ArrayList<>();
+    private List<BioStudiesLink> links = new ArrayList<>();
 }

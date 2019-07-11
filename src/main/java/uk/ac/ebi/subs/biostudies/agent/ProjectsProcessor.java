@@ -1,5 +1,10 @@
 package uk.ac.ebi.subs.biostudies.agent;
 
+import static java.util.Collections.singletonList;
+import static java.util.stream.Collectors.toList;
+
+import java.util.List;
+import java.util.Optional;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -7,7 +12,10 @@ import uk.ac.ebi.subs.biostudies.client.BioStudiesClient;
 import uk.ac.ebi.subs.biostudies.client.BioStudiesSession;
 import uk.ac.ebi.subs.biostudies.client.SubmissionReport;
 import uk.ac.ebi.subs.biostudies.converters.UsiProjectToBsSubmission;
+import uk.ac.ebi.subs.biostudies.model.BioStudiesAttribute;
+import uk.ac.ebi.subs.biostudies.model.BioStudiesLink;
 import uk.ac.ebi.subs.biostudies.model.BioStudiesSubmission;
+import uk.ac.ebi.subs.biostudies.model.BioStudiesSubsection;
 import uk.ac.ebi.subs.biostudies.model.DataOwner;
 import uk.ac.ebi.subs.data.component.Archive;
 import uk.ac.ebi.subs.data.status.ProcessingStatusEnum;
@@ -65,7 +73,20 @@ public class ProjectsProcessor {
             cert.setMessage(message);
         }
 
-
         return cert;
+    }
+
+    public void processUpdate(String submissionId, List<String> samples) {
+        BioStudiesSession session = bioStudiesClient.getBioStudiesSession();
+        BioStudiesSubmission submission = session.getSubmission(submissionId);
+        submission.getSection().setLinks(samples.stream().map(this::createLink).collect(toList()));
+        session.update(submission);
+    }
+
+    private BioStudiesLink createLink(String sampleId){
+        BioStudiesLink link = new BioStudiesLink();
+        link.setAttributes(singletonList(BioStudiesAttribute.builder().name("Type").value("BioSample").build()));
+        link.setUrl(sampleId);
+        return link;
     }
 }

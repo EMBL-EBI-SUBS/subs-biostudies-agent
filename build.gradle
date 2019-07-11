@@ -1,11 +1,15 @@
 buildscript {
+    ext {
+        springBootVersion = '2.0.1.RELEASE'
+    }
     repositories {
         mavenCentral()
+        jcenter()
         maven { url "https://plugins.gradle.org/m2/" }
         maven { url 'http://repo.spring.io/plugins-release' }
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.10.RELEASE")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
         classpath 'org.hidetake:gradle-ssh-plugin:2.10.1'
         classpath 'io.spring.gradle:propdeps-plugin:0.0.9.RELEASE'
     }
@@ -19,11 +23,9 @@ apply plugin: 'java'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'application'
 apply plugin: 'org.hidetake.ssh'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
 
-apply plugin: 'propdeps'
-apply plugin: 'propdeps-maven'
-apply plugin: 'propdeps-idea'
-apply plugin: 'propdeps-eclipse'
 apply from: 'deploy.gradle'
 
 mainClassName = "uk.ac.ebi.subs.biostudies.BioStudiesAgentApp"
@@ -34,13 +36,23 @@ repositories {
 }
 
 dependencies {
+    compile("org.springframework.boot:spring-boot-starter-web")
+    compile("org.springframework.boot:spring-boot-starter-actuator")
+    compile("org.springframework.boot:spring-boot-starter-amqp")
+    compile("org.springframework.boot:spring-boot-configuration-processor")
+
+    compile("de.codecentric:spring-boot-admin-starter-client:2.0.1")
+
+    // USI Dependencies
     compile("uk.ac.ebi.subs:subs-processing-model:2.11.1-SNAPSHOT")
-    compile("uk.ac.ebi.subs:subs-messaging:0.4.0-SNAPSHOT")
+    compile("uk.ac.ebi.subs:subs-messaging:0.4.0-SNAPSHOT") {
+        exclude group: 'org.springframework.boot', module :'spring-boot-starter-amqp'
+    }
     compile("uk.ac.ebi.subs:validator-common:3.9.0-SNAPSHOT") {
         exclude group: 'org.springframework.boot', module :'spring-boot-starter-data-mongodb'
+        exclude group: 'org.springframework.boot', module :'spring-boot-starter-amqp'
+        exclude group: 'org.springframework.boot', module :'spring-boot-starter-data-rest'
     }
-
-    optional("org.springframework.boot:spring-boot-configuration-processor")
 
     compile ("com.auth0:java-jwt:3.3.0")
     compile("de.siegmar:logback-gelf:1.1.0")
@@ -53,7 +65,7 @@ dependencies {
     testCompile("commons-io:commons-io:2.5")
 }
 
-jar {
+bootJar {
     enabled = true
     archiveName = "subs-biostudies-agent.jar"
 }

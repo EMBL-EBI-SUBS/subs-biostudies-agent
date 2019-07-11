@@ -72,6 +72,24 @@ public class BioStudiesSession {
         return response.getBody();
     }
 
+    public SubmissionReport update(BioStudiesSubmission submission) {
+        BioStudiesSubmissionWrapper wrapper = new BioStudiesSubmissionWrapper();
+        wrapper.getSubmissions().add(submission);
+        return restTemplate.postForObject(
+                bioStudiesConfig.getServer() + "/submit/createupdate" + "?BIOSTDSESS=" + bioStudiesLoginResponse
+                        .getSessid(),
+                wrapper,
+                SubmissionReport.class
+        );
+    }
+
+    public BioStudiesSubmission getSubmission(String accNo) {
+        return restTemplate.getForObject(
+                bioStudiesConfig.getServer() + "/submission/" + accNo + "?BIOSTDSESS=" + bioStudiesLoginResponse
+                        .getSessid(),
+                BioStudiesSubmission.class);
+    }
+
     private void logSubmissionResponse(HttpEntity<SubmissionReport> response) {
         ObjectMapper om = new ObjectMapper();
         String submissionReport = null;
@@ -110,21 +128,10 @@ public class BioStudiesSession {
         parameters.put("domain", dataOwner.getTeamName());
 
         List<String> params = parameters.entrySet().stream()
-                .map(entry -> {
-                    try {
-                        return entry.getKey() + "=" + UriUtils.encodeQueryParam(entry.getValue(), "UTF-8");
-                    } catch (UnsupportedEncodingException e) {
-                        throw new RuntimeException(e);
-                    }
-                })
+                .map(entry -> entry.getKey() + "=" + UriUtils.encodeQueryParam(entry.getValue(), "UTF-8"))
                 .collect(Collectors.toList());
 
         String queryString = "?" + String.join("&", params);
-
-        return URI.create(
-                bioStudiesConfig.getServer()
-                        + "/submit/createupdate"
-                        + queryString
-        );
+        return URI.create(bioStudiesConfig.getServer() + "/submit/createupdate" + queryString);
     }
 }
