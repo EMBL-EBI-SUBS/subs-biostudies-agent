@@ -36,18 +36,13 @@ public class ValidationListener {
         this.validator = validator;
     }
 
-   // @RabbitListener(queues = BIOSTUDIES_PROJECT_VALIDATION)
+    @RabbitListener(queues = BIOSTUDIES_PROJECT_VALIDATION)
     public void handleValidationRequest(ProjectValidationMessageEnvelope envelope) {
         logger.info("Received validation request on project with id {}", envelope.getEntityToValidate().getId());
 
         SingleValidationResultsEnvelope singleValidationResultsEnvelope = validator.validateProject(envelope);
 
         sendResults(singleValidationResultsEnvelope);
-    }
-
-    @RabbitListener(queues = BIOSTUDIES_PROJECT_VALIDATION)
-    public void listen(String mesage){
-        logger.info(mesage);
     }
 
     private void sendResults(SingleValidationResultsEnvelope envelope) {
