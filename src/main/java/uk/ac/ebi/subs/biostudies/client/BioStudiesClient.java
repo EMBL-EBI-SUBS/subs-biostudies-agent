@@ -14,13 +14,13 @@ import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
 import java.util.Date;
+import uk.ac.ebi.subs.biostudies.model.BioStudiesSubmission;
 
 /**
  * This class represent a client for the BioSamples REST interface.
  */
 @Component
 @RequiredArgsConstructor
-
 public class BioStudiesClient {
 
     private static final Logger logger = LoggerFactory.getLogger(BioStudiesClient.class);

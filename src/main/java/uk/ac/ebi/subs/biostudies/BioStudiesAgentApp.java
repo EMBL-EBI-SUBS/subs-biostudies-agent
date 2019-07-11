@@ -1,9 +1,10 @@
 package uk.ac.ebi.subs.biostudies;
 
+import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.system.ApplicationPidFileWriter;
 
+@EnableRabbit
 @SpringBootApplication
 public class BioStudiesAgentApp {
     public static void main(String[] args) {
