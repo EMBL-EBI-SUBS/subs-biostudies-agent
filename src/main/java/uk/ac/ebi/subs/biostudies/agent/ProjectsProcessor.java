@@ -8,6 +8,7 @@ import java.util.Optional;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpStatusCodeException;
 import uk.ac.ebi.subs.biostudies.client.BioStudiesClient;
 import uk.ac.ebi.subs.biostudies.client.BioStudiesSession;
 import uk.ac.ebi.subs.biostudies.client.SubmissionReport;
@@ -32,10 +33,27 @@ public class ProjectsProcessor {
     @NonNull private final BioStudiesClient bioStudiesClient;
     @NonNull private UsiProjectToBsSubmission converter;
 
-    public ProcessingCertificate processProjects(DataOwner dataOwner, Project project) {
-        BioStudiesSession bioStudiesSession = bioStudiesClient.getBioStudiesSession();
+    public static final String PROJECT_PROCESSING_HAS_FAILED_MESSAGE = "Project processing has failed: %s";
 
-        return processProject(dataOwner, project, bioStudiesSession);
+    public ProcessingCertificate processProjects(DataOwner dataOwner, Project project) {
+        ProcessingCertificate processingCertificate;
+        try {
+            BioStudiesSession bioStudiesSession = bioStudiesClient.getBioStudiesSession();
+            processingCertificate = processProject(dataOwner, project, bioStudiesSession);
+        } catch (IllegalStateException ise) {
+            processingCertificate = createProcessingCertificate(project, ProcessingStatusEnum.Error);
+            processingCertificate.setMessage(String.format(PROJECT_PROCESSING_HAS_FAILED_MESSAGE, ise.getMessage()));
+        } catch (HttpStatusCodeException hsce) {
+            processingCertificate = createProcessingCertificate(project, ProcessingStatusEnum.Error);
+            processingCertificate.setMessage(
+                    String.format(PROJECT_PROCESSING_HAS_FAILED_MESSAGE, hsce.getStatusText()));
+        }
+
+        return processingCertificate;
+    }
+
+    private ProcessingCertificate createProcessingCertificate(Project project, ProcessingStatusEnum processingStatus) {
+        return new ProcessingCertificate(project, Archive.BioStudies, processingStatus);
     }
 
     private ProcessingCertificate processProject(DataOwner dataOwner, Project project, BioStudiesSession bioStudiesSession) {
@@ -50,27 +68,26 @@ public class ProjectsProcessor {
 
         SubmissionReport report = bioStudiesSession.store(dataOwner, bioStudiesSubmission);
 
-        String status = report.getStatus();
+        ProcessingCertificate cert = getProcessingCertificate(project, report);
+
         String accession = report.findAccession();
 
-        ProcessingStatusEnum outcome = ProcessingStatusEnum.Completed;
-        String message = null;
-
-        if (!status.equals("OK")){
-            outcome = ProcessingStatusEnum.Error;
-            message = String.join("; ",report.findMessages("ERROR"));
-        }
-
-        ProcessingCertificate cert = new ProcessingCertificate(
-                project,
-                Archive.BioStudies,
-                outcome
-        );
         if (accession != null){
             cert.setAccession(accession);
         }
-        if (message != null){
-            cert.setMessage(message);
+
+        return cert;
+    }
+
+    private ProcessingCertificate getProcessingCertificate(Project project, SubmissionReport report) {
+        ProcessingCertificate cert;
+
+        if (!report.getStatus().equals("OK")){
+            cert = createProcessingCertificate(project, ProcessingStatusEnum.Error);
+            cert.setMessage(
+                    String.join("; ",report.findMessages("ERROR")));
+        } else {
+            cert = createProcessingCertificate(project, ProcessingStatusEnum.Completed);
         }
 
         return cert;

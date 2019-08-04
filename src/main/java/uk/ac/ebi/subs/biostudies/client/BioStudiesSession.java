@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriUtils;
 import uk.ac.ebi.subs.biostudies.model.BioStudiesSubmission;
@@ -55,15 +56,10 @@ public class BioStudiesSession {
                     SubmissionReport.class
             );
         } catch (HttpServerErrorException e) {
-            logger.error("Http server error during createupdate");
-            logger.error("Response code: {}", e.getRawStatusCode());
-            logger.error("Response body: {}", e.getResponseBodyAsString());
+            logHttpError(e, "Http server error during createupdate");
             throw e;
-
         } catch (HttpClientErrorException e) {
-            logger.error("Http client error during createupdate");
-            logger.error("Response code: {}", e.getRawStatusCode());
-            logger.error("Response body: {}", e.getResponseBodyAsString());
+            logHttpError(e, "Http client error during createupdate");
             throw e;
         }
 
@@ -88,6 +84,12 @@ public class BioStudiesSession {
                 bioStudiesConfig.getServer() + "/submission/" + accNo + "?BIOSTDSESS=" + bioStudiesLoginResponse
                         .getSessid(),
                 BioStudiesSubmission.class);
+    }
+
+    private void logHttpError(HttpStatusCodeException e, String httpErrorTitleMessage) {
+        logger.error(httpErrorTitleMessage);
+        logger.error("Response code: {}", e.getRawStatusCode());
+        logger.error("Response body: {}", e.getResponseBodyAsString());
     }
 
     private void logSubmissionResponse(HttpEntity<SubmissionReport> response) {
